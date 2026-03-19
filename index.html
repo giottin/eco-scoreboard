@@ -1,1 +1,200 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Progression des villes</title>
 
+<style>
+body{
+font-family: Arial;
+margin:0;
+padding:20px;
+background:url('background.jpg');
+background-size:cover;
+color:#2b1d0e;
+}
+
+header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+background:url('wood.png');
+padding:12px;
+border-radius:10px;
+}
+
+header img{height:60px;}
+
+.city{
+background:rgba(255,255,255,0.9);
+margin-top:20px;
+padding:15px;
+border-radius:10px;
+}
+
+.tiers{display:flex;gap:10px;}
+
+.tier{
+flex:1;
+padding:10px;
+border-radius:8px;
+border:2px solid #8b6b3f;
+}
+
+.tier1{background:#a8d0e6;}
+.tier2{background:#f4a261;}
+.tier3{background:#c77dff;}
+.tier4{background:#e76f51;}
+
+label{
+display:block;
+margin:5px 0;
+padding:4px;
+border-radius:5px;
+transition:0.3s;
+}
+
+/* ✔ CHECK VISUEL FORT */
+input[type="checkbox"]:checked + span{
+background:#2e7d32;
+color:white;
+padding:3px 6px;
+border-radius:5px;
+font-weight:bold;
+}
+
+.progress-container{
+height:22px;
+background:#ddd;
+border-radius:10px;
+margin-top:10px;
+position:relative;
+}
+
+.progress-bar{
+height:100%;
+background:linear-gradient(90deg,#4caf50,#1b5e20);
+}
+
+.progress-text{
+position:absolute;
+right:8px;
+top:2px;
+font-weight:bold;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+<div style="display:flex;align-items:center;gap:10px;">
+<img src="logo.png">
+<h1>Progression des villes</h1>
+</div>
+
+<div>
+<input type="password" id="pwd" placeholder="Mot de passe">
+<button onclick="login()">Entrer</button>
+</div>
+</header>
+
+<div id="cities"></div>
+
+<script>
+
+let access=false;
+
+function login(){
+if(document.getElementById("pwd").value==="eco123"){
+access=true;
+render();
+}
+}
+
+let data={
+"Aubépine":{
+tier1:[
+{name:"Restaurant T2",done:true},
+{name:"Routes pavées 75%",done:true}
+],
+tier2:[
+{name:"Parc",done:true},
+{name:"Mairie T3",done:true}
+],
+tier3:[
+{name:"Banque",done:true},
+{name:"Laboratoire",done:false}
+],
+tier4:[
+{name:"Asphalte",done:false}
+]
+},
+
+"Vostokgrad":{
+tier1:[
+{name:"Restaurant T2",done:true},
+{name:"Routes pavées 75%",done:false}
+],
+tier2:[
+{name:"Parc",done:true}
+],
+tier3:[
+{name:"Banque",done:false}
+],
+tier4:[
+{name:"Asphalte",done:false}
+]
+}
+};
+
+function render(){
+let container=document.getElementById("cities");
+container.innerHTML="";
+
+for(let city in data){
+let div=document.createElement("div");
+div.className="city";
+
+let total=0,done=0;
+
+let html=`<h2>${city}</h2><div class="tiers">`;
+
+for(let t in data[city]){
+html+=`<div class="tier ${t}"><h3>${t}</h3>`;
+
+data[city][t].forEach(obj=>{
+total++;
+if(obj.done)done++;
+
+html+=`
+<label>
+<input type="checkbox" ${obj.done?'checked':''} ${!access?'disabled':''}>
+<span>${obj.name}</span>
+</label>`;
+});
+
+html+=`</div>`;
+}
+
+let p=Math.round(done/total*100);
+
+html+=`
+</div>
+<div class="progress-container">
+<div class="progress-bar" style="width:${p}%"></div>
+<div class="progress-text">${p}%</div>
+</div>`;
+
+div.innerHTML=html;
+container.appendChild(div);
+}
+}
+
+render();
+
+</script>
+
+</body>
+</html>
