@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>REST Cloud V3</title>
+<title>Cloud Final</title>
 
 <style>
 body{
@@ -56,9 +56,9 @@ font-weight:bold;
 
 <div class="container">
 
-<h1>REST Cloud V3</h1>
+<h1>Cloud Final</h1>
 
-<p>Version REST avec vraie clé anon JWT.</p>
+<p>Test final REST Supabase.</p>
 
 <textarea id="cloudText"></textarea>
 
@@ -92,7 +92,7 @@ async function saveCloud(){
 try{
 
 const response = await fetch(
-SUPABASE_URL + '/rest/v1/dashboard_data',
+SUPABASE_URL + '/rest/v1/cloud_saves',
 {
 method:'POST',
 headers:{
@@ -102,10 +102,11 @@ headers:{
 'Prefer':'resolution=merge-duplicates'
 },
 body:JSON.stringify({
-id:1,
+id:'save1',
 content:{
 text:textarea.value
-}
+},
+updated_at:new Date().toISOString()
 })
 }
 );
@@ -134,7 +135,7 @@ try{
 
 const response = await fetch(
 SUPABASE_URL +
-'/rest/v1/dashboard_data?id=eq.1&select=*',
+'/rest/v1/cloud_saves?id=eq.save1&select=*',
 {
 method:'GET',
 headers:{
