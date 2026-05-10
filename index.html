@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>REST Cloud V1</title>
+<title>REST Cloud V2</title>
 
 <style>
 body{
@@ -56,11 +56,11 @@ font-weight:bold;
 
 <div class="container">
 
-<h1>REST Cloud Test</h1>
+<h1>REST Cloud V2</h1>
 
-<p>Teste la sauvegarde cloud sans SDK Supabase.</p>
+<p>Version REST stable sans SDK Supabase.</p>
 
-<textarea id="content"></textarea>
+<textarea id="cloudText"></textarea>
 
 <button id="saveBtn">Sauvegarder</button>
 <button id="loadBtn">Recharger cloud</button>
@@ -71,15 +71,20 @@ font-weight:bold;
 
 <script>
 
-const SUPABASE_URL = 'https://kijhnxehaxdjgvkddgyo.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_mAXF0I_pLCxjnDCoIvoMYA_crqYPypL';
+const SUPABASE_URL =
+'https://kijhnxehaxdjgvkddgyo.supabase.co';
 
-const textarea = document.getElementById('content');
-const statusEl = document.getElementById('status');
+const SUPABASE_ANON_KEY =
+'sb_publishable_mAXF0I_pLCxjnDCoIvoMYA_crqYPypL';
+
+const status = document.getElementById('status');
+const textarea = document.getElementById('cloudText');
 
 function setStatus(text,color='white'){
-statusEl.innerHTML = text;
-statusEl.style.color = color;
+
+status.innerHTML = text;
+status.style.color = color;
+
 }
 
 setStatus('Cloud REST prêt','#7eff83');
@@ -88,31 +93,42 @@ async function saveCloud(){
 
 try{
 
+const text = textarea.value;
+
 const response = await fetch(
-SUPABASE_URL + '/rest/v1/dashboard_data?id=eq.1',
+SUPABASE_URL + '/rest/v1/dashboard_data',
 {
-method:'PATCH',
+method:'POST',
 headers:{
-'apikey':SUPABASE_KEY,
-'Authorization':'Bearer ' + SUPABASE_KEY,
 'Content-Type':'application/json',
-'Prefer':'return=minimal'
+'apikey':SUPABASE_ANON_KEY,
+'Authorization':'Bearer ' + SUPABASE_ANON_KEY,
+'Prefer':'resolution=merge-duplicates'
 },
 body:JSON.stringify({
+id:1,
 content:{
-text:textarea.value
+text:text
 }
 })
 }
 );
 
-if(!response.ok){
+console.log('SAVE STATUS', response.status);
 
-throw new Error('HTTP ' + response.status);
+const result = await response.text();
 
-}
+console.log(result);
+
+if(response.ok){
 
 setStatus('Sauvegarde OK','#7eff83');
+
+}else{
+
+setStatus('Erreur sauvegarde','#ff6666');
+
+}
 
 }catch(e){
 
@@ -129,15 +145,18 @@ async function loadCloud(){
 try{
 
 const response = await fetch(
-SUPABASE_URL + '/rest/v1/dashboard_data?id=eq.1&select=*',
+SUPABASE_URL +
+'/rest/v1/dashboard_data?id=eq.1&select=*',
 {
 method:'GET',
 headers:{
-'apikey':SUPABASE_KEY,
-'Authorization':'Bearer ' + SUPABASE_KEY
+'apikey':SUPABASE_ANON_KEY,
+'Authorization':'Bearer ' + SUPABASE_ANON_KEY
 }
 }
 );
+
+console.log('LOAD STATUS', response.status);
 
 if(!response.ok){
 
@@ -146,6 +165,8 @@ throw new Error('HTTP ' + response.status);
 }
 
 const data = await response.json();
+
+console.log(data);
 
 if(data.length > 0){
 
