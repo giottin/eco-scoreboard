@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>REST Cloud V2</title>
+<title>REST Cloud V3</title>
 
 <style>
 body{
@@ -56,9 +56,9 @@ font-weight:bold;
 
 <div class="container">
 
-<h1>REST Cloud V2</h1>
+<h1>REST Cloud V3</h1>
 
-<p>Version REST stable sans SDK Supabase.</p>
+<p>Version REST avec vraie clé anon JWT.</p>
 
 <textarea id="cloudText"></textarea>
 
@@ -75,16 +75,14 @@ const SUPABASE_URL =
 'https://kijhnxehaxdjgvkddgyo.supabase.co';
 
 const SUPABASE_ANON_KEY =
-'sb_publishable_mAXF0I_pLCxjnDCoIvoMYA_crqYPypL';
+'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtpamhueGVoYXhkamd2a2RkZ3lvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzNzg1MzUsImV4cCI6MjA5Mzk1NDUzNX0.NkiQ8wHtG8R79F-c5EQo8ZJ3X9wc4-qBjM2y8PlsmbI';
 
 const status = document.getElementById('status');
 const textarea = document.getElementById('cloudText');
 
 function setStatus(text,color='white'){
-
 status.innerHTML = text;
 status.style.color = color;
-
 }
 
 setStatus('Cloud REST prêt','#7eff83');
@@ -92,8 +90,6 @@ setStatus('Cloud REST prêt','#7eff83');
 async function saveCloud(){
 
 try{
-
-const text = textarea.value;
 
 const response = await fetch(
 SUPABASE_URL + '/rest/v1/dashboard_data',
@@ -108,34 +104,26 @@ headers:{
 body:JSON.stringify({
 id:1,
 content:{
-text:text
+text:textarea.value
 }
 })
 }
 );
-
-console.log('SAVE STATUS', response.status);
 
 const result = await response.text();
 
 console.log(result);
 
 if(response.ok){
-
 setStatus('Sauvegarde OK','#7eff83');
-
 }else{
-
 setStatus('Erreur sauvegarde','#ff6666');
-
+console.error(result);
 }
 
 }catch(e){
-
 console.error(e);
-
 setStatus('Erreur sauvegarde','#ff6666');
-
 }
 
 }
@@ -156,12 +144,8 @@ headers:{
 }
 );
 
-console.log('LOAD STATUS', response.status);
-
 if(!response.ok){
-
 throw new Error('HTTP ' + response.status);
-
 }
 
 const data = await response.json();
@@ -169,23 +153,15 @@ const data = await response.json();
 console.log(data);
 
 if(data.length > 0){
-
 textarea.value = data[0].content?.text || '';
-
 setStatus('Chargement OK','#7eff83');
-
 }else{
-
 setStatus('Aucune donnée','#ffaa33');
-
 }
 
 }catch(e){
-
 console.error(e);
-
 setStatus('Erreur chargement','#ff6666');
-
 }
 
 }
