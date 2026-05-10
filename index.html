@@ -3,38 +3,156 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Le Havre des Bâtisseurs</title>
-
-<link rel="stylesheet" href="./style.css">
+<title>Cloud Test Minimal</title>
 
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-<script defer src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
+<style>
+body{
+background:#111;
+color:white;
+font-family:Arial,sans-serif;
+padding:40px;
+}
+
+.container{
+max-width:700px;
+margin:auto;
+background:#222;
+padding:30px;
+border-radius:20px;
+}
+
+textarea{
+width:100%;
+height:200px;
+padding:15px;
+margin-top:20px;
+margin-bottom:20px;
+border:none;
+border-radius:12px;
+font-size:16px;
+}
+
+button{
+padding:14px 20px;
+border:none;
+border-radius:12px;
+font-weight:bold;
+cursor:pointer;
+margin-right:10px;
+}
+
+#status{
+margin-top:20px;
+font-size:18px;
+font-weight:bold;
+}
+</style>
 </head>
 <body>
 
-<div id="app">
+<div class="container">
 
-<div class="logo">
-<img src="./logo.png">
-</div>
+<h1>Test Cloud Supabase</h1>
 
-<div class="topbar">
-<button id="toggleEditBtn">Modifier</button>
-<button id="addCityBtn">Ajouter ville</button>
-<button id="downloadBtn">Télécharger PNG</button>
-</div>
+<p>Écris quelque chose, sauvegarde, recharge la page.</p>
 
-<div id="cloudStatus">☁️ Connexion...</div>
+<textarea id="content"></textarea>
 
-<div id="editorPanel"></div>
+<button id="saveBtn">Sauvegarder</button>
+<button id="loadBtn">Recharger cloud</button>
 
-<div id="citiesContainer"></div>
+<div id="status">Connexion...</div>
 
 </div>
 
-<script defer src="./storage.js"></script>
-<script defer src="./ui.js"></script>
-<script defer src="./app.js"></script>
+<script>
+
+const statusEl = document.getElementById('status');
+const textarea = document.getElementById('content');
+
+function setStatus(text,color='white'){
+statusEl.innerHTML = text;
+statusEl.style.color = color;
+}
+
+const supabase = window.supabase.createClient(
+'https://kijhnxehaxdjgvkddgyo.supabase.co',
+'sb_publishable_mAXF0I_pLCxjnDCoIvoMYA_crqYPypL'
+);
+
+setStatus('Supabase connecté','#7eff83');
+
+async function save(){
+
+try{
+
+const response = await supabase
+.from('dashboard_data')
+.upsert({
+id:1,
+content:{
+text:textarea.value
+}
+},{
+onConflict:'id'
+});
+
+if(response.error){
+throw response.error;
+}
+
+setStatus('Sauvegarde OK','#7eff83');
+
+}catch(e){
+
+console.error(e);
+
+setStatus('Erreur sauvegarde','#ff6666');
+
+}
+
+}
+
+async function load(){
+
+try{
+
+const response = await supabase
+.from('dashboard_data')
+.select('*')
+.eq('id',1)
+.single();
+
+if(response.error){
+throw response.error;
+}
+
+if(response.data && response.data.content){
+
+textarea.value = response.data.content.text || '';
+
+setStatus('Chargement OK','#7eff83');
+
+}
+
+}catch(e){
+
+console.error(e);
+
+setStatus('Erreur chargement','#ff6666');
+
+}
+
+}
+
+document.getElementById('saveBtn').onclick = save;
+document.getElementById('loadBtn').onclick = load;
+
+load();
+
+</script>
 
 </body>
 </html>
