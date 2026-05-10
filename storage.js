@@ -134,3 +134,20 @@ setCloudStatus('❌ Chargement impossible','#ff6666');
 return null;
 
 }
+
+
+window.addEventListener('load', ()=>{
+
+console.log('window loaded');
+
+setTimeout(async ()=>{
+
+if(typeof initSupabase === 'function'){
+
+await initSupabase();
+
+}
+
+},300);
+
+});
