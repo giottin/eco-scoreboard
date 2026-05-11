@@ -14,7 +14,7 @@ ctx.imageSmoothingQuality = 'high';
 const width = 1600;
 const margin = 90;
 const cityHeight = 660;
-const topPadding = 320;
+const topPadding = 420;
 
 const totalHeight = topPadding + (state.cities.length * (cityHeight + margin)) + 80;
 
@@ -24,11 +24,11 @@ canvas.height = totalHeight;
 const bg = await loadImage('fond.png');
 ctx.drawImage(bg,0,0,width,totalHeight);
 
-ctx.fillStyle='rgba(0,0,0,0.42)';
+ctx.fillStyle='rgba(0,0,0,0.58)';
 ctx.fillRect(0,0,width,totalHeight);
 
 const logo = await loadImage('logo.png');
-const logoWidth = 420;
+const logoWidth = 380;
 const logoHeight = (logo.height / logo.width) * logoWidth;
 ctx.drawImage(logo,(width-logoWidth)/2,40,logoWidth,logoHeight);
 
@@ -47,8 +47,8 @@ const rankX = (width - rankWidth) / 2;
 ctx.save();
 ctx.fillStyle='rgba(0,0,0,0.48)';
 ctx.shadowColor='rgba(255,255,255,0.10)';
-ctx.shadowBlur=35;
-roundRect(ctx, 25, y - 35, width - 50, rankHeight + 320, 42, true, false);
+ctx.shadowBlur=65;
+roundRect(ctx, 20, y - 85, width - 40, rankHeight + 430, 42, true, false);
 ctx.restore();
 
 ctx.drawImage(rankImg, rankX, y, rankWidth, rankHeight);
@@ -62,7 +62,7 @@ ctx.textBaseline='middle';
 ctx.fillText(
 (city.name || 'Ville').toUpperCase(),
 width / 2,
-y + 150
+y + 178
 );
 
 let progressX = 70;

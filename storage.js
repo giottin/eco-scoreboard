@@ -54,6 +54,43 @@ city.checks[l][t]=false;
 
 });
 
+
+
+sortCities();
+
+}
+
+function getCityScore(city){
+
+let score = 0;
+
+state.model.levels.forEach((level,l)=>{
+level.tasks.forEach((task,t)=>{
+if(city.checks?.[l]?.[t]) score++;
+});
+
+});
+
+return score;
+
+}
+
+function sortCities(){
+
+state.cities.sort((a,b)=>{
+
+const levelDiff = getCompletedLevels(b) - getCompletedLevels(a);
+
+if(levelDiff !== 0) return levelDiff;
+
+const scoreDiff = getCityScore(b) - getCityScore(a);
+
+if(scoreDiff !== 0) return scoreDiff;
+
+return a.name.localeCompare(b.name);
+
+});
+
 }
 
 function getCompletedLevels(city){
