@@ -1,4 +1,3 @@
-
 const ROMAN=['I','II','III','IV','V','VI','VII','VIII'];
 
 let state={
@@ -7,14 +6,14 @@ cities:[]
 
 function setStatus(text,color='white'){
 const el=document.getElementById('cloudStatus');
-el.innerHTML=text;
+el.innerText=text;
 el.style.color=color;
 }
 
-function createCity(name='Ville'){
+function cityTemplate(name='Nouvelle Ville'){
 return{
-id:Date.now()+Math.random(),
-name:name,
+id:crypto.randomUUID(),
+name,
 rank:1
 };
 }
@@ -23,34 +22,47 @@ async function saveCloud(){
 
 try{
 
-const cleanState=JSON.parse(JSON.stringify(state));
+const response = await fetch(
+SUPABASE_URL + '/rest/v1/cloud_saves?id=eq.save1',
+{
+method:'PATCH',
+headers:{
+'Content-Type':'application/json',
+'apikey':SUPABASE_ANON_KEY,
+'Authorization':'Bearer '+SUPABASE_ANON_KEY,
+'Prefer':'return=minimal'
+},
+body:JSON.stringify({
+content:state
+})
+}
+);
 
-const response=await fetch(
-SUPABASE_URL+'/rest/v1/cloud_saves',
+if(!response.ok){
+
+await fetch(
+SUPABASE_URL + '/rest/v1/cloud_saves',
 {
 method:'POST',
 headers:{
 'Content-Type':'application/json',
 'apikey':SUPABASE_ANON_KEY,
-'Authorization':'Bearer '+SUPABASE_ANON_KEY,
-'Prefer':'resolution=merge-duplicates'
+'Authorization':'Bearer '+SUPABASE_ANON_KEY
 },
 body:JSON.stringify({
 id:'save1',
-content:cleanState
+content:state
 })
 }
 );
 
-if(response.ok){
-setStatus('☁ Sauvegarde cloud OK','#7dff98');
-}else{
-setStatus('Erreur sauvegarde','#ff7d7d');
 }
+
+setStatus('☁ Sauvegarde OK','#78ff97');
 
 }catch(e){
 console.error(e);
-setStatus('Erreur cloud','#ff7d7d');
+setStatus('Erreur sauvegarde','#ff6f6f');
 }
 
 }
@@ -59,8 +71,8 @@ async function loadCloud(){
 
 try{
 
-const response=await fetch(
-SUPABASE_URL+'/rest/v1/cloud_saves?id=eq.save1&select=*',
+const response = await fetch(
+SUPABASE_URL + '/rest/v1/cloud_saves?id=eq.save1&select=*',
 {
 headers:{
 'apikey':SUPABASE_ANON_KEY,
@@ -69,30 +81,30 @@ headers:{
 }
 );
 
-const data=await response.json();
+const data = await response.json();
 
-if(data.length>0 && data[0].content){
-state=data[0].content;
+if(data.length && data[0].content){
+state = data[0].content;
 }
 
 if(!state.cities){
 state.cities=[];
 }
 
-setStatus('☁ Cloud connecté','#7dff98');
+setStatus('☁ Cloud connecté','#78ff97');
 
 }catch(e){
 console.error(e);
-setStatus('Erreur chargement','#ff7d7d');
+setStatus('Erreur cloud','#ff6f6f');
 }
 
 }
 
 function render(){
 
-const app=document.getElementById('app');
+const container=document.getElementById('cities');
 
-app.innerHTML='';
+container.innerHTML='';
 
 state.cities.forEach(city=>{
 
@@ -102,60 +114,54 @@ let levels='';
 
 for(let i=1;i<=8;i++){
 
-levels+=`
+levels += `
 <div class="level">
+<div class="level-title">Palier ${ROMAN[i-1]}</div>
 
-<div class="level-title">
-Palier ${ROMAN[i-1]}
-</div>
-
-<div class="task">
+<label class="task">
 <input
 type="checkbox"
 ${i<=city.rank?'checked':''}
 onchange="setRank('${city.id}',${i})">
-<div>Tâche 1</div>
-</div>
+<span>Tâche 1</span>
+</label>
 
-<div class="task">
+<label class="task">
 <input
 type="checkbox"
 ${i<city.rank?'checked':''}
 onchange="setRank('${city.id}',${i})">
-<div>Tâche 2</div>
-</div>
+<span>Tâche 2</span>
+</label>
 
 </div>
 `;
 
 }
 
-app.innerHTML+=`
-
+container.innerHTML += `
 <div class="city">
 
 <div class="city-rank"
 style="background-image:url('city_rank_${city.rank}.png')">
 
-<div class="roman">
+<div class="rank-roman">
 ${ROMAN[city.rank-1]}
 </div>
 
-<div class="city-zone">
-<div class="city-name">${city.name}</div>
+<div class="city-name">
+${city.name}
 </div>
 
 </div>
 
-<div class="city-edit">
 <input
+class="city-input"
 value="${city.name}"
 oninput="renameCity('${city.id}',this.value)">
-</div>
 
 <div class="progress">
-<div class="progress-fill"
-style="width:${progress}%"></div>
+<div class="progress-fill" style="width:${progress}%"></div>
 </div>
 
 <div class="scale">
@@ -174,7 +180,6 @@ ${levels}
 </div>
 
 </div>
-
 `;
 
 });
@@ -183,43 +188,38 @@ ${levels}
 
 async function renameCity(id,value){
 
-const city=state.cities.find(c=>String(c.id)===String(id));
+const city = state.cities.find(c=>c.id===id);
 
 if(city){
 city.name=value;
 }
 
 render();
-
 await saveCloud();
 
 }
 
 async function setRank(id,rank){
 
-const city=state.cities.find(c=>String(c.id)===String(id));
+const city = state.cities.find(c=>c.id===id);
 
 if(city){
 city.rank=rank;
 }
 
 render();
-
 await saveCloud();
 
 }
 
 async function addCity(){
 
-state.cities.push(createCity('Nouvelle Ville'));
+state.cities.push(cityTemplate());
 
 render();
-
 await saveCloud();
 
 }
-
-document.getElementById('addCityBtn').onclick=addCity;
 
 (async()=>{
 
@@ -227,7 +227,7 @@ await loadCloud();
 
 if(state.cities.length===0){
 
-state.cities.push(createCity('Tokyo'));
+state.cities.push(cityTemplate('Tokyo'));
 
 await saveCloud();
 

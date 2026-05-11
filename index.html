@@ -1,33 +1,29 @@
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard V7</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Dashboard V8</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="dashboard">
+<div class="overlay">
 
-<div class="topbar">
-<div class="logo">
-<img src="logo.png">
-</div>
+<header class="topbar">
+<img src="logo.png" class="logo">
 
 <div class="actions">
-<button class="btn" id="addCityBtn">Ajouter ville</button>
-<div class="cloud" id="cloudStatus">Connexion...</div>
+<button onclick="addCity()">Ajouter ville</button>
+<div id="cloudStatus">Connexion...</div>
 </div>
-</div>
+</header>
 
-<div id="app"></div>
+<div id="cities"></div>
 
 </div>
 
 <script src="config.js"></script>
 <script src="app.js"></script>
-
 </body>
 </html>

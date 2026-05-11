@@ -1,3 +1,2 @@
-
-const SUPABASE_URL='https://kijhnxehaxdjgvkddgyo.supabase.co';
-const SUPABASE_ANON_KEY='REMPLACE_PAR_TA_CLE_ANON';
+const SUPABASE_URL = 'https://kijhnxehaxdjgvkddgyo.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtpamhueGVoYXhkamd2a2RkZ3lvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzNzg1MzUsImV4cCI6MjA5Mzk1NDUzNX0.NkiQ8wHtG8R79F-c5EQo8ZJ3X9wc4-qBjM2y8PlsmbI';
