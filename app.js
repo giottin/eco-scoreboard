@@ -359,3 +359,80 @@ topbar.appendChild(btn);
 }
 
 },200);
+
+
+async function prepareExportMode(){
+
+document.body.classList.add('export-mode');
+
+if(document.fonts && document.fonts.ready){
+await document.fonts.ready;
+}
+
+const images=[...document.images];
+
+await Promise.all(images.map(img=>{
+if(img.complete) return Promise.resolve();
+return new Promise(res=>{
+img.onload=res;
+img.onerror=res;
+});
+}));
+
+}
+
+function cleanupExportMode(){
+document.body.classList.remove('export-mode');
+}
+
+async function downloadScoreboardImage(){
+
+const target=document.querySelector('.overlay');
+
+if(!window.html2canvas){
+
+const script=document.createElement('script');
+script.src='https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js';
+
+script.onload=()=>downloadScoreboardImage();
+
+document.body.appendChild(script);
+
+return;
+}
+
+await prepareExportMode();
+
+const buttons=document.querySelectorAll('button');
+buttons.forEach(btn=>btn.style.visibility='hidden');
+
+const canvas=await html2canvas(target,{
+backgroundColor:null,
+useCORS:true,
+scale:2,
+logging:false,
+scrollY:-window.scrollY,
+windowWidth:document.documentElement.scrollWidth,
+windowHeight:document.documentElement.scrollHeight
+});
+
+buttons.forEach(btn=>btn.style.visibility='');
+
+cleanupExportMode();
+
+canvas.toBlob((blob)=>{
+
+const url=URL.createObjectURL(blob);
+
+const a=document.createElement('a');
+
+a.href=url;
+a.download='eco-scoreboard-export.jpg';
+
+a.click();
+
+URL.revokeObjectURL(url);
+
+},'image/jpeg',0.9);
+
+}

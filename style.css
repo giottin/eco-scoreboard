@@ -247,3 +247,27 @@ border:1px solid #5cff89;
 transform:translateY(-1px);
 }
 
+
+
+.export-mode *{
+transform:none !important;
+}
+
+.export-mode .city-name-input{
+top:61% !important;
+}
+
+.export-mode .download-btn,
+.export-mode .delete-city,
+.export-mode .actions button:not(.download-btn){
+display:none !important;
+}
+
+.export-mode .overlay{
+background:rgba(0,0,0,.25);
+}
+
+.green-check{
+accent-color:#32ff32 !important;
+}
+
