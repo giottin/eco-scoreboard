@@ -157,6 +157,9 @@ saveDebounced();
 
 window.addEventListener('DOMContentLoaded',async()=>{
 
+document.body.style.backgroundPosition='top center';
+
+
 await loadCloud();
 
 if(state.cities.length===0){

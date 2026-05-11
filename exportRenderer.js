@@ -1,137 +1,149 @@
+
 window.ExportRenderer={
 
 async exportScoreboard(){
 
 await document.fonts.ready;
 
+const cards=[...document.querySelectorAll('.city-card')];
+
+const width=1600;
+const cardHeight=430;
+const spacing=40;
+const headerHeight=180;
+const footer=60;
+
+const totalHeight=headerHeight+(cards.length*(cardHeight+spacing))+footer;
+
 const canvas=document.createElement('canvas');
+canvas.width=width;
+canvas.height=totalHeight;
+
 const ctx=canvas.getContext('2d');
 
 ctx.imageSmoothingEnabled=true;
 ctx.imageSmoothingQuality='high';
 
-const WIDTH=1600;
-const HEADER=170;
-const CARD_HEIGHT=470;
-const GAP=30;
-
-const HEIGHT=HEADER+(state.cities.length*(CARD_HEIGHT+GAP))+80;
-
-canvas.width=WIDTH;
-canvas.height=HEIGHT;
-
 const bg=await loadImage('fond.png');
 
-ctx.drawImage(bg,0,0,WIDTH,HEIGHT);
+ctx.drawImage(bg,0,0,width,totalHeight);
 
 ctx.fillStyle='rgba(0,0,0,0.42)';
-ctx.fillRect(0,0,WIDTH,HEIGHT);
+ctx.fillRect(0,0,width,totalHeight);
 
 const logo=await loadImage('logo.png');
 
-ctx.drawImage(logo,35,20,110,110);
+const logoW=220;
+const logoH=220;
 
-ctx.fillStyle='white';
-ctx.font='700 54px Arial';
-ctx.textAlign='left';
-ctx.fillText('ECO SCOREBOARD',180,82);
+ctx.drawImage(
+logo,
+(width/2)-(logoW/2),
+-10,
+logoW,
+logoH
+);
 
-let currentY=150;
+let currentY=170;
 
 for(const city of state.cities){
 
 const rank=getCityRank(city);
 
-const rankImg=await loadImage(rank.asset);
+const banner=await loadImage(rank.asset);
 
-const bannerX=80;
-const bannerY=currentY;
-const bannerW=1440;
-const bannerH=125;
+const bannerW=1200;
+const bannerH=400;
 
-ctx.drawImage(rankImg,bannerX,bannerY,bannerW,bannerH);
+ctx.drawImage(
+banner,
+(width/2)-(bannerW/2),
+currentY-135,
+bannerW,
+bannerH
+);
 
 ctx.textAlign='center';
 ctx.textBaseline='middle';
 ctx.fillStyle='white';
-ctx.font='700 42px Arial';
+ctx.font='700 34px Arial';
 
 ctx.fillText(
 city.name,
-bannerX+(bannerW/2),
-bannerY+(bannerH/2)
+width/2,
+currentY+22
 );
 
-let progressX=60;
+let px=70;
 
 state.model.levels.forEach((level,index)=>{
 
 const filled=index<getCompletedLevels(city);
 
-ctx.fillStyle=filled ? '#37ff61' : '#1f1f1f';
+ctx.fillStyle=filled ? '#41ff71' : '#1f1f1f';
 
-roundRect(ctx,progressX,currentY+150,175,18,10,true,false);
+roundRect(ctx,px,currentY+80,170,18,9,true,false);
 
-progressX+=190;
+px+=182;
 
 });
 
-let gridX=35;
-let gridY=currentY+190;
+let gx=40;
+let gy=currentY+120;
 
 state.model.levels.forEach((level,l)=>{
 
-ctx.fillStyle='rgba(10,10,10,0.72)';
-roundRect(ctx,gridX,gridY,350,175,16,true,false);
+ctx.fillStyle='rgba(12,12,12,0.72)';
+roundRect(ctx,gx,gy,350,170,14,true,false);
 
 ctx.strokeStyle='rgba(255,255,255,0.08)';
-ctx.strokeRect(gridX,gridY,350,175);
+ctx.strokeRect(gx,gy,350,170);
 
 ctx.fillStyle='white';
 ctx.textAlign='left';
 ctx.textBaseline='alphabetic';
 
-ctx.font='700 22px Arial';
-ctx.fillText(level.name,gridX+18,gridY+35);
+ctx.font='700 21px Arial';
+ctx.fillText(level.name,gx+18,gy+34);
 
 ctx.font='18px Arial';
 
-let taskY=gridY+72;
+let ty=gy+72;
 
 level.tasks.forEach((task,t)=>{
 
 const checked=city.checks?.[l]?.[t];
 
-ctx.fillStyle=checked ? '#37ff61' : '#8a8a8a';
+ctx.fillStyle=checked ? '#41ff71' : '#8c8c8c';
 
-ctx.fillRect(gridX+18,taskY-14,16,16);
+ctx.fillRect(gx+18,ty-14,16,16);
 
 ctx.fillStyle='white';
-ctx.fillText(task,gridX+48,taskY);
+ctx.fillText(task,gx+48,ty);
 
-taskY+=30;
+ty+=30;
 
 });
 
-gridX+=365;
+gx+=370;
 
-if(gridX+350>WIDTH){
+if(gx+350>width){
 
-gridX=35;
-gridY+=200;
+gx=40;
+gy+=190;
 
 }
 
 });
 
-currentY+=CARD_HEIGHT+GAP;
+currentY+=cardHeight+spacing;
 
 }
 
 const link=document.createElement('a');
 
 link.download='eco-scoreboard.png';
-link.href=canvas.toDataURL('image/png');
+link.href=canvas.toDataURL('image/png',1);
 
 link.click();
 
@@ -147,7 +159,6 @@ const img=new Image();
 
 img.onload=()=>resolve(img);
 img.onerror=reject;
-
 img.src=src;
 
 });
