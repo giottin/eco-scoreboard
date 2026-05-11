@@ -3,11 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>ECO Scoreboard Cloud</title>
+<title>ECO Scoreboard</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
 <div class="background-layer"></div>
 
 <div class="overlay">
@@ -16,14 +15,12 @@
 <img src="logo.png" class="logo">
 
 <div class="actions">
-<button onclick="toggleEdit()">Modifier les paliers</button>
 <button onclick="addCity()">Ajouter ville</button>
-<button class="download-btn" onclick="downloadScoreboardImage()">📸 Télécharger image</button>
-<div id="cloudStatus">☁ Initialisation...</div>
+<button onclick="downloadScoreboardImage()">Télécharger</button>
+<div id="cloudStatus"></div>
 </div>
 </header>
 
-<div id="editorPanel"></div>
 <div id="cities"></div>
 
 </div>
@@ -33,6 +30,5 @@
 <script src="cloud.js"></script>
 <script src="exportRenderer.js"></script>
 <script src="app.js"></script>
-
 </body>
 </html>

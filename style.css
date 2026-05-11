@@ -1,345 +1,141 @@
-@import url("https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&display=swap");
-
-
-
 body{
 margin:0;
-font-family:Arial;
+font-family:Arial,sans-serif;
+background:black;
 color:white;
-background:#000;
-position:relative;
-z-index:1;
+overflow-x:hidden;
 }
 
+.background-layer{
+position:fixed;
+inset:0;
+background:url('fond.png') center/cover no-repeat;
+z-index:-2;
+}
+
+.background-layer::after{
+content:'';
+position:absolute;
+inset:0;
+background:rgba(0,0,0,0.45);
+}
 
 .overlay{
-background:rgba(0,0,0,.72);
-min-height:100vh;
-padding:16px;
+padding:20px;
 }
 
 .topbar{
 display:flex;
 justify-content:space-between;
-align-items:flex-start;
-margin-bottom:24px;
-gap:12px;
+align-items:center;
+margin-bottom:20px;
 }
 
 .logo{
-width:140px;
-margin-top:6px;
-filter:drop-shadow(0 4px 12px rgba(0,0,0,.5));
+height:110px;
 }
 
 .actions{
 display:flex;
 gap:10px;
-flex-wrap:wrap;
-justify-content:flex-end;
 align-items:center;
 }
 
 button{
-background:#111;
-border:1px solid #444;
-color:white;
-padding:10px 14px;
-border-radius:14px;
-}
-
-.city-card,
-.editor-card{
-background:rgba(0,0,0,.42);
-border:1px solid rgba(255,255,255,.08);
-border-radius:28px;
-padding:18px;
-margin-bottom:32px;
-position:relative;
-backdrop-filter:blur(6px);
-}
-
-.rank-panel{
-height:150px;
-background-size:contain;
-background-repeat:no-repeat;
-background-position:center;
-display:flex;
-align-items:center;
-justify-content:center;
-position:relative;
-}
-
-.city-name-input{
-background:transparent;
+background:#2f8f45;
 border:none;
+padding:12px 18px;
+border-radius:10px;
 color:white;
-font-size:30px;
-font-weight:700;
-text-align:center;
-width:58%;
-text-transform:uppercase;
-font-family:'Cinzel', serif;
-letter-spacing:2px;
+font-weight:bold;
+cursor:pointer;
+}
 
-text-shadow:0 2px 10px black;
+.city-card{
+margin-bottom:40px;
+}
+
+.rank-banner{
+position:relative;
+height:125px;
+display:flex;
+justify-content:center;
+align-items:center;
+}
+
+.rank-image{
 position:absolute;
-top:60%;
 left:50%;
+top:50%;
 transform:translate(-50%,-50%);
-padding-left:0;
-margin-left:0;
+width:92%;
+height:125px;
+object-fit:fill;
+pointer-events:none;
 }
 
-.city-name-input.small{
-font-size:24px;
+.city-title-wrapper{
+position:absolute;
+left:50%;
+top:50%;
+transform:translate(-50%,-50%);
+display:flex;
+justify-content:center;
+align-items:center;
+width:60%;
+height:100%;
 }
 
-.city-name-input.tiny{
-font-size:18px;
-}
-
-.city-name-input:focus{
-outline:none;
-}
-
-.segmented-progress{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(35px,1fr));
-gap:8px;
-margin:6px 0 24px;
-}
-
-.segment{
-height:14px;
-border-radius:999px;
-background:#0d0d0d;
-border:1px solid #3f3f3f;
-}
-
-.segment.filled{
-background:#19c219;
-border-color:#49ff49;
-box-shadow:0 0 8px rgba(0,255,0,.45);
-}
-
-.levels-grid{
-display:grid;
-grid-template-columns:repeat(4,minmax(0,1fr));
-gap:16px;
-}
-
-.level-box{
-background:rgba(25,15,0,.72);
-border:1px solid #4a3318;
-border-radius:16px;
-padding:12px;
-}
-
-.level-title,
-.level-name-input{
-font-weight:700;
+.city-title{
+width:100%;
 text-align:center;
-margin-bottom:10px;
-color:#f0d8a8;
+font-size:32px;
+font-weight:700;
 background:none;
 border:none;
-width:100%;
-}
-
-.task-row{
-display:flex;
-gap:10px;
-margin:10px 0;
-align-items:center;
-}
-
-.green-check{
-accent-color:#22d322;
-width:18px;
-height:18px;
-}
-
-.task-input{
-width:100%;
-margin:6px 0;
-background:#111;
-border:1px solid #444;
+outline:none;
 color:white;
-padding:8px;
-border-radius:8px;
 }
 
-.delete-city{
-position:absolute;
-right:14px;
-top:14px;
-background:#220909;
-z-index:2;
+.progress-wrapper{
+display:flex;
+gap:15px;
+margin:10px 30px 20px;
 }
 
-.editor-title{
-text-align:center;
-margin-bottom:18px;
+.progress-segment{
+flex:1;
+height:16px;
+border-radius:999px;
+background:#202020;
 }
 
-@media(max-width:700px){
+.progress-segment.filled{
+background:#3cff68;
+}
 
 .levels-grid{
-grid-template-columns:repeat(2,minmax(0,1fr));
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:20px;
 }
 
-.city-name-input{
-font-size:24px;
-width:72%;
+.level-card{
+background:rgba(10,10,10,0.72);
+border:1px solid rgba(255,255,255,0.08);
+border-radius:14px;
+padding:16px;
+min-height:150px;
 }
 
-.city-name-input.small{
-font-size:20px;
-}
-
-.city-name-input.tiny{
-font-size:16px;
-}
-
-}
-
-
-.task-edit-row{
+.task{
 display:flex;
-gap:8px;
-align-items:center;
-margin-bottom:8px;
+gap:10px;
+margin-bottom:10px;
 }
 
-.editor-actions-row{
+.bottom-actions{
+margin-top:14px;
 display:flex;
-gap:8px;
-margin-top:12px;
-flex-wrap:wrap;
+justify-content:flex-end;
 }
-
-.global-editor-actions{
-display:flex;
-justify-content:center;
-margin-top:20px;
-}
-
-.add-level-btn{
-background:#1c3d1c;
-border:1px solid #4eff75;
-}
-
-.danger-btn,
-.mini-delete{
-background:#3a1010;
-border:1px solid #ff5b5b;
-}
-
-.mini-delete{
-padding:6px 10px;
-border-radius:10px;
-}
-
-
-.download-btn{
-background:#18351c;
-border:1px solid #5cff89;
-}
-
-.download-btn:hover{
-transform:translateY(-1px);
-}
-
-
-
-
-
-.download-btn{
-background:#173417;
-border:1px solid #59ff86;
-}
-
-.city-name-input{
-text-align:center;
-left:50%;
-transform:translate(-50%,-50%);
-}
-
-
-
-.overlay{
-position:relative;
-overflow:hidden;
-}
-
-.rank-panel{
-background-repeat:no-repeat !important;
-background-position:center center !important;
-background-size:contain !important;
-}
-
-.city-name-input{
-left:50% !important;
-top:62% !important;
-transform:translate(-50%,-50%) !important;
-text-align:center !important;
-width:48% !important;
-line-height:1 !important;
-}
-
-
-
-.background-layer{
-position:fixed;
-inset:0;
-background:
-linear-gradient(rgba(0,0,0,.45),rgba(0,0,0,.45)),
-url('fond.png') center center / cover no-repeat;
-z-index:-1;
-}
-
-.overlay{
-position:relative;
-z-index:2;
-background:transparent !important;
-}
-
-/* TRUE CENTERING */
-.rank-panel{
-display:flex !important;
-align-items:center !important;
-justify-content:center !important;
-position:relative;
-background-repeat:no-repeat !important;
-background-position:center center !important;
-background-size:contain !important;
-}
-
-.city-name-input{
-position:relative !important;
-left:auto !important;
-top:auto !important;
-transform:none !important;
-margin:0 auto !important;
-display:block !important;
-width:54% !important;
-text-align:center !important;
-line-height:1 !important;
-padding:0 !important;
-}
-
-/* EXPORT MODE */
-.export-mode .background-layer{
-opacity:1 !important;
-}
-
-.export-mode button{
-display:none !important;
-}
-
-.export-mode .overlay{
-padding-top:20px;
-padding-bottom:20px;
-}
-

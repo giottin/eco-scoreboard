@@ -1,51 +1,61 @@
-
-function debounce(fn,delay=700){
+function debounce(fn,delay=600){
 
 let timer;
 
 return (...args)=>{
-
 clearTimeout(timer);
-
-timer=setTimeout(()=>{
-fn(...args);
-},delay);
-
+timer=setTimeout(()=>fn(...args),delay);
 };
 
 }
 
-const saveDebounced = debounce(saveCloud,800);
+const saveDebounced = debounce(saveCloud,700);
+
+function sortCities(){
+
+state.cities.sort((a,b)=>{
+
+const scoreA = getCityScore(a);
+const scoreB = getCityScore(b);
+
+if(scoreB.completed !== scoreA.completed){
+return scoreB.completed - scoreA.completed;
+}
+
+return scoreB.checked - scoreA.checked;
+
+});
+
+}
 
 function render(){
 
 syncCities();
+sortCities();
 
-renderEditor();
-
-const container = document.getElementById('cities');
+const container=document.getElementById('cities');
 
 container.innerHTML='';
 
 state.cities.forEach(city=>{
 
-const rank = getCityRank(city);
+const rank=getCityRank(city);
 
-const card = document.createElement('div');
+const card=document.createElement('div');
 card.className='city-card';
 
-let levelsHTML='';
+let levels='';
 
 state.model.levels.forEach((level,l)=>{
 
-let tasksHTML='';
+let tasks='';
 
 level.tasks.forEach((task,t)=>{
 
-const checked = city.checks[l]?.[t];
+const checked = city.checks?.[l]?.[t];
 
-tasksHTML += `
-<label class="task-row">
+tasks += `
+<label class="task">
 <input type="checkbox"
 ${checked ? 'checked' : ''}
 onchange="toggleTask('${city.id}',${l},${t},this.checked)">
@@ -55,38 +65,41 @@ onchange="toggleTask('${city.id}',${l},${t},this.checked)">
 
 });
 
-levelsHTML += `
-<div class="level-box">
+levels += `
+<div class="level-card">
 <h3>${level.name}</h3>
-${tasksHTML}
+${tasks}
 </div>
 `;
 
 });
 
-card.innerHTML = `
-<div class="rank-panel" style="background-image:url('${rank.asset}')">
-<div class="rank-overlay">
+card.innerHTML=`
+<div class="rank-banner">
+<img class="rank-image" src="${rank.asset}">
+<div class="city-title-wrapper">
 <input
-class="city-name-input"
+class="city-title"
 value="${city.name}"
-onchange="renameCity('${city.id}',this.value)"
-placeholder="Nom de ville">
+onchange="renameCity('${city.id}',this.value)">
 </div>
 </div>
 
-<div class="segmented-progress">
-${state.model.levels.map((lvl,index)=>{
+<div class="progress-wrapper">
+${state.model.levels.map((level,index)=>{
+
 const filled = index < getCompletedLevels(city);
-return `<div class="segment ${filled ? 'filled' : ''}"></div>`;
+
+return `<div class="progress-segment ${filled ? 'filled' : ''}"></div>`;
+
 }).join('')}
 </div>
 
 <div class="levels-grid">
-${levelsHTML}
+${levels}
 </div>
 
-<div class="city-actions">
+<div class="bottom-actions">
 <button onclick="deleteCity('${city.id}')">Supprimer</button>
 </div>
 `;
@@ -97,85 +110,11 @@ container.appendChild(card);
 
 }
 
-function renderEditor(){
-
-const panel = document.getElementById('editorPanel');
-
-if(!state.editMode){
-
-panel.innerHTML='';
-
-return;
-
-}
-
-let html = `
-<div class="editor-card">
-<h2 class="editor-title">Configuration des paliers</h2>
-`;
-
-state.model.levels.forEach((level,l)=>{
-
-html += `
-<div class="editor-level">
-<input
-class="level-name-input"
-value="${level.name}"
-onchange="renameLevel(${l},this.value)">
-
-<button onclick="deleteLevel(${l})">Supprimer palier</button>
-
-<div class="editor-tasks">
-`;
-
-level.tasks.forEach((task,t)=>{
-
-html += `
-<div class="editor-task-row">
-<input
-value="${task}"
-onchange="renameTask(${l},${t},this.value)">
-<button onclick="deleteTask(${l},${t})">X</button>
-</div>
-`;
-
-});
-
-html += `
-<button onclick="addTask(${l})">Ajouter tâche</button>
-</div>
-</div>
-`;
-
-});
-
-html += `
-<button onclick="addLevel()">Ajouter palier</button>
-</div>
-`;
-
-panel.innerHTML = html;
-
-}
-
 function addCity(){
 
-state.cities.push(createCity('Nouvelle ville'));
-
-syncCities();
+state.cities.push(createCity(`Ville ${state.cities.length+1}`));
 
 render();
-
-saveDebounced();
-
-}
-
-function deleteCity(id){
-
-state.cities = state.cities.filter(c=>c.id !== id);
-
-render();
-
 saveDebounced();
 
 }
@@ -192,6 +131,15 @@ saveDebounced();
 
 }
 
+function deleteCity(id){
+
+state.cities = state.cities.filter(c=>c.id!==id);
+
+render();
+saveDebounced();
+
+}
+
 function toggleTask(cityId,l,t,checked){
 
 const city = state.cities.find(c=>c.id===cityId);
@@ -203,102 +151,27 @@ city.checks[l]={};
 city.checks[l][t]=checked;
 
 render();
-
 saveDebounced();
 
 }
 
-function toggleEdit(){
-
-state.editMode = !state.editMode;
-
-render();
-
-}
-
-function addLevel(){
-
-state.model.levels.push({
-name:`Palier ${state.model.levels.length+1}`,
-tasks:['Nouvelle tâche']
-});
-
-syncCities();
-
-render();
-
-saveDebounced();
-
-}
-
-function deleteLevel(index){
-
-state.model.levels.splice(index,1);
-
-syncCities();
-
-render();
-
-saveDebounced();
-
-}
-
-function renameLevel(index,value){
-
-state.model.levels[index].name = value;
-
-saveDebounced();
-
-}
-
-function addTask(levelIndex){
-
-state.model.levels[levelIndex].tasks.push('Nouvelle tâche');
-
-syncCities();
-
-render();
-
-saveDebounced();
-
-}
-
-function deleteTask(levelIndex,taskIndex){
-
-state.model.levels[levelIndex].tasks.splice(taskIndex,1);
-
-syncCities();
-
-render();
-
-saveDebounced();
-
-}
-
-function renameTask(levelIndex,taskIndex,value){
-
-state.model.levels[levelIndex].tasks[taskIndex]=value;
-
-saveDebounced();
-
-}
-
-async function init(){
+window.addEventListener('DOMContentLoaded',async()=>{
 
 await loadCloud();
 
-render();
+if(state.cities.length===0){
+
+state.cities.push(createCity('Ville 1'));
+state.cities.push(createCity('Ville 2'));
 
 }
 
-window.addEventListener('DOMContentLoaded',init);
+render();
+
+});
 
 async function downloadScoreboardImage(){
 
-if(window.ExportRenderer){
-
 await window.ExportRenderer.exportScoreboard();
-
-}
 
 }
