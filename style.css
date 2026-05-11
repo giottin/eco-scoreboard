@@ -543,3 +543,49 @@ font-size:22px !important;
 }
 
 }
+
+
+/* FINAL EXPORT/UI FIXES */
+.rank-panel{
+  height:220px !important;
+  margin-bottom:18px;
+}
+
+.rank-overlay{
+  position:relative;
+  width:100%;
+  height:100%;
+}
+
+.city-name-input{
+  position:absolute !important;
+  top:118px !important;
+  left:50% !important;
+  transform:translateX(-50%) !important;
+  width:42% !important;
+  z-index:5 !important;
+  text-align:center !important;
+}
+
+.logo{
+  position:relative;
+  z-index:20;
+  opacity:1 !important;
+  filter:none !important;
+}
+
+.overlay{
+  background:rgba(0,0,0,.58);
+}
+
+@media(max-width:700px){
+  .rank-panel{
+    height:120px !important;
+  }
+
+  .city-name-input{
+    top:58px !important;
+    width:48% !important;
+    font-size:20px !important;
+  }
+}
