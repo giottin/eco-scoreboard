@@ -3,27 +3,22 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Dashboard V8</title>
+<title>ECO Scoreboard V10</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
 <div class="overlay">
-
 <header class="topbar">
 <img src="logo.png" class="logo">
-
 <div class="actions">
+<button onclick="toggleEdit()">Modifier les paliers</button>
 <button onclick="addCity()">Ajouter ville</button>
-<div id="cloudStatus">Connexion...</div>
+<div id="cloudStatus">☁ Connecté</div>
 </div>
 </header>
-
+<div id="editorPanel"></div>
 <div id="cities"></div>
-
 </div>
-
-<script src="config.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

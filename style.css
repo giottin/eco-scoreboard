@@ -1,171 +1,22 @@
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-}
-
-body{
-font-family:Arial,sans-serif;
-background:url('./fond.png') center center/cover fixed;
-min-height:100vh;
-padding:18px;
-color:white;
-overflow-x:hidden;
-}
-
-.overlay{
-background:rgba(0,0,0,0.58);
-backdrop-filter:blur(8px);
-border-radius:28px;
-padding:18px;
-}
-
-.topbar{
-display:flex;
-justify-content:space-between;
-align-items:flex-start;
-margin-bottom:22px;
-gap:20px;
-}
-
-.logo{
-width:120px;
-}
-
-.actions{
-display:flex;
-gap:10px;
-align-items:center;
-flex-wrap:wrap;
-}
-
-.actions button,#cloudStatus{
-background:rgba(0,0,0,0.75);
-border:1px solid rgba(255,255,255,0.12);
-color:white;
-padding:12px 16px;
-border-radius:12px;
-font-weight:bold;
-}
-
-.city{
-margin-bottom:50px;
-}
-
-.city-rank{
-width:100%;
-max-width:420px;
-height:140px;
-margin:auto;
-position:relative;
-background-size:contain;
-background-repeat:no-repeat;
-background-position:center;
-}
-
-.rank-roman{
-position:absolute;
-top:4px;
-left:50%;
-transform:translateX(-50%);
-font-size:32px;
-font-weight:900;
-text-shadow:0 0 8px black;
-}
-
-.city-name{
-position:absolute;
-left:50%;
-top:53%;
-transform:translate(-50%,-50%);
-width:72%;
-text-align:center;
-font-size:22px;
-font-weight:800;
-text-shadow:0 0 10px black;
-white-space:nowrap;
-overflow:hidden;
-text-overflow:ellipsis;
-}
-
-.city-input{
-display:block;
-margin:8px auto 0 auto;
-width:220px;
-padding:10px;
-border:none;
-border-radius:10px;
-background:rgba(255,255,255,0.08);
-color:white;
-text-align:center;
-}
-
-.progress{
-margin-top:12px;
-height:18px;
-background:#0b0b0b;
-border-radius:999px;
-overflow:hidden;
-}
-
-.progress-fill{
-height:100%;
-background:linear-gradient(90deg,#20c94f,#7cff92);
-}
-
-.scale{
-display:grid;
-grid-template-columns:repeat(8,1fr);
-margin-top:6px;
-font-size:12px;
-font-weight:bold;
-text-align:center;
-}
-
-.levels{
-display:grid;
-grid-template-columns:repeat(4,1fr);
-gap:10px;
-margin-top:12px;
-}
-
-@media(min-width:900px){
-.levels{
-grid-template-columns:repeat(8,1fr);
-}
-}
-
-.level{
-background:rgba(0,0,0,0.55);
-padding:10px;
-border-radius:14px;
-}
-
-.level-title{
-background:#ddd0b4;
-color:#24170b;
-padding:8px;
-border-radius:8px;
-font-weight:bold;
-text-align:center;
-margin-bottom:8px;
-font-size:13px;
-}
-
-.task{
-display:flex;
-gap:8px;
-align-items:center;
-background:#ddd0b4;
-color:#24170b;
-padding:8px;
-border-radius:8px;
-margin-bottom:8px;
-font-size:12px;
-}
-
-.task input{
-accent-color:#20c94f;
-width:18px;
-height:18px;
-}
+body{margin:0;font-family:Arial;background:url('fond.png') center/cover fixed;color:white}
+.overlay{background:rgba(0,0,0,.7);min-height:100vh;padding:16px}
+.topbar{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px}
+.logo{width:90px}
+.actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+button{background:#111;border:1px solid #444;color:#fff;padding:10px 14px;border-radius:12px}
+.city-card,.editor-card{background:rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.08);border-radius:24px;padding:18px;margin-bottom:28px;position:relative}
+.rank-panel{height:140px;background-size:contain;background-repeat:no-repeat;background-position:center;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.city-name-input{background:transparent;border:none;color:white;font-size:34px;font-weight:700;text-align:center;width:80%;text-transform:uppercase;text-shadow:0 2px 8px black}
+.city-name-input:focus{outline:none}
+.roman-rank{font-size:40px;font-weight:700;margin-bottom:4px;text-shadow:0 2px 8px black}
+.segmented-progress{display:grid;grid-template-columns:repeat(auto-fit,minmax(40px,1fr));gap:6px;margin:12px 0 22px}
+.segment{height:14px;border-radius:999px;background:#111;border:1px solid #444}
+.segment.filled{background:#18b218}
+.levels-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.level-box{background:rgba(20,10,0,.7);border:1px solid #3d2a14;border-radius:14px;padding:12px}
+.level-title,.level-name-input{font-weight:700;text-align:center;margin-bottom:10px;color:#f0d8a8;background:none;border:none;width:100%}
+.task-row{display:flex;gap:8px;margin:8px 0;align-items:center}
+.task-input{width:100%;margin:6px 0;background:#111;border:1px solid #444;color:white;padding:8px;border-radius:8px}
+.delete-city{position:absolute;right:16px;top:16px;background:#170909}
+#cloudStatus{color:#78ff97;background:#111;padding:10px;border-radius:10px}
+@media(min-width:900px){.levels-grid{grid-template-columns:repeat(4,1fr)}}
