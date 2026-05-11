@@ -508,3 +508,37 @@ top:28% !important;
 height:140px !important;
 }
 }
+
+
+/* FINAL CITY TITLE FIX */
+.city-rank-header{
+overflow:visible !important;
+position:relative !important;
+}
+
+.city-title{
+position:absolute !important;
+left:50% !important;
+top:68% !important;
+transform:translate(-50%,-50%) !important;
+width:46% !important;
+height:auto !important;
+display:flex !important;
+align-items:center !important;
+justify-content:center !important;
+text-align:center !important;
+padding:0 !important;
+margin:0 !important;
+line-height:1 !important;
+z-index:20 !important;
+}
+
+@media(max-width:700px){
+
+.city-title{
+top:70% !important;
+width:52% !important;
+font-size:22px !important;
+}
+
+}

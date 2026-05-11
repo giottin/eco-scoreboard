@@ -12,44 +12,46 @@ ctx.imageSmoothingEnabled = true;
 ctx.imageSmoothingQuality = 'high';
 
 const width = 1600;
-const cardHeight = 420;
-const margin = 40;
-const headerHeight = 180;
+const margin = 50;
+const cityHeight = 520;
+const topPadding = 40;
 
-const height = headerHeight + (state.cities.length * (cardHeight + margin)) + 100;
+const totalHeight = topPadding + (state.cities.length * (cityHeight + margin)) + 80;
 
 canvas.width = width;
-canvas.height = height;
+canvas.height = totalHeight;
 
 const bg = await loadImage('fond.png');
-ctx.drawImage(bg,0,0,width,height);
+ctx.drawImage(bg,0,0,width,totalHeight);
 
-ctx.fillStyle='rgba(0,0,0,0.50)';
-ctx.fillRect(0,0,width,height);
+ctx.fillStyle='rgba(0,0,0,0.55)';
+ctx.fillRect(0,0,width,totalHeight);
 
-const logo = await loadImage('logo.png');
-ctx.drawImage(logo,40,20,140,140);
-
-ctx.fillStyle='white';
-ctx.font='700 54px Arial';
-ctx.fillText('ECO SCOREBOARD',220,95);
-
-let y = 180;
+let y = topPadding;
 
 for(const city of state.cities){
 
 const rank = getCityRank(city);
-
 const rankImg = await loadImage(rank.asset);
 
-ctx.drawImage(rankImg,40,y,1520,120);
+const rankWidth = 1180;
+const rankHeight = 145;
+const rankX = (width - rankWidth) / 2;
+
+ctx.drawImage(rankImg, rankX, y, rankWidth, rankHeight);
 
 ctx.fillStyle='white';
-ctx.font='700 42px Arial';
+ctx.font='700 40px Cinzel';
 ctx.textAlign='center';
-ctx.fillText(city.name || 'Ville',800,y+72);
+ctx.textBaseline='middle';
 
-let progressX = 60;
+ctx.fillText(
+(city.name || 'Ville').toUpperCase(),
+width / 2,
+y + 92
+);
+
+let progressX = 70;
 
 state.model.levels.forEach((level,index)=>{
 
@@ -57,46 +59,44 @@ const filled = index < getCompletedLevels(city);
 
 ctx.fillStyle = filled ? '#38ff63' : '#232323';
 
-roundRect(ctx,progressX,y+145,170,16,8,true,false);
+roundRect(ctx,progressX,y+175,165,16,8,true,false);
 
 progressX += 185;
 
 });
 
 let lx = 40;
-let ly = y + 190;
+let ly = y + 215;
 
 state.model.levels.forEach((level,l)=>{
 
-ctx.fillStyle='rgba(18,18,18,0.82)';
-roundRect(ctx,lx,ly,340,170,14,true,false);
+ctx.fillStyle='rgba(12,12,12,0.82)';
+roundRect(ctx,lx,ly,340,165,16,true,false);
 
-ctx.strokeStyle='rgba(255,255,255,0.15)';
-ctx.strokeRect(lx,ly,340,170);
+ctx.strokeStyle='rgba(180,120,50,0.45)';
+ctx.strokeRect(lx,ly,340,165);
 
 ctx.fillStyle='white';
-ctx.font='700 22px Arial';
+ctx.font='700 24px Arial';
 ctx.textAlign='left';
 
-ctx.fillText(level.name,lx+16,ly+34);
+ctx.fillText(level.name,lx+18,ly+36);
 
 ctx.font='18px Arial';
 
-let ty = ly + 70;
+let ty = ly + 72;
 
 level.tasks.forEach((task,t)=>{
 
 const checked = city.checks?.[l]?.[t];
 
-ctx.fillStyle = checked ? '#38ff63' : '#888';
-
-ctx.fillRect(lx+16,ty-14,16,16);
+ctx.fillStyle = checked ? '#38ff63' : '#8a8a8a';
+ctx.fillRect(lx+18,ty-14,16,16);
 
 ctx.fillStyle='white';
+ctx.fillText(task,lx+48,ty);
 
-ctx.fillText(task,lx+44,ty);
-
-ty += 28;
+ty += 30;
 
 });
 
@@ -105,19 +105,19 @@ lx += 370;
 if(lx + 340 > width){
 
 lx = 40;
-ly += 200;
+ly += 195;
 
 }
 
 });
 
-y += cardHeight + margin;
+y += cityHeight + margin;
 
 }
 
 const link = document.createElement('a');
 
-link.download='eco-scoreboard-hd.png';
+link.download='eco-scoreboard-clean.png';
 link.href = canvas.toDataURL('image/png');
 
 link.click();
