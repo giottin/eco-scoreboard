@@ -13,8 +13,8 @@ ctx.imageSmoothingQuality = 'high';
 
 const width = 1600;
 const margin = 90;
-const cityHeight = 620;
-const topPadding = 260;
+const cityHeight = 660;
+const topPadding = 320;
 
 const totalHeight = topPadding + (state.cities.length * (cityHeight + margin)) + 80;
 
@@ -43,17 +43,26 @@ const rankWidth = 700;
 const rankHeight = (rankImg.height / rankImg.width) * rankWidth;
 const rankX = (width - rankWidth) / 2;
 
+// fond flou général derrière les ranks + progression
+ctx.save();
+ctx.fillStyle='rgba(0,0,0,0.48)';
+ctx.shadowColor='rgba(255,255,255,0.10)';
+ctx.shadowBlur=35;
+roundRect(ctx, 25, y - 35, width - 50, rankHeight + 320, 42, true, false);
+ctx.restore();
+
 ctx.drawImage(rankImg, rankX, y, rankWidth, rankHeight);
 
 ctx.fillStyle='white';
-ctx.font='700 34px Cinzel';
+const cityFontSize = city.name.length > 18 ? 26 : city.name.length > 12 ? 30 : 34;
+ctx.font=`700 ${cityFontSize}px Cinzel`;
 ctx.textAlign='center';
 ctx.textBaseline='middle';
 
 ctx.fillText(
 (city.name || 'Ville').toUpperCase(),
 width / 2,
-y + 118
+y + 150
 );
 
 let progressX = 70;
@@ -64,14 +73,14 @@ const filled = index < getCompletedLevels(city);
 
 ctx.fillStyle = filled ? '#38ff63' : '#232323';
 
-roundRect(ctx,progressX,y + rankHeight + 12,165,16,8,true,false);
+roundRect(ctx,progressX,y + rankHeight + 26,165,18,9,true,false);
 
 progressX += 185;
 
 });
 
 let lx = 40;
-let ly = y + rankHeight + 70;
+let ly = y + rankHeight + 95;
 
 state.model.levels.forEach((level,l)=>{
 
