@@ -262,3 +262,25 @@ left:50%;
 transform:translate(-50%,-50%);
 }
 
+
+
+.overlay{
+position:relative;
+overflow:hidden;
+}
+
+.rank-panel{
+background-repeat:no-repeat !important;
+background-position:center center !important;
+background-size:contain !important;
+}
+
+.city-name-input{
+left:50% !important;
+top:62% !important;
+transform:translate(-50%,-50%) !important;
+text-align:center !important;
+width:48% !important;
+line-height:1 !important;
+}
+
