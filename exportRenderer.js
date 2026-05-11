@@ -14,7 +14,7 @@ ctx.imageSmoothingQuality = 'high';
 const width = 1600;
 const margin = 90;
 const cityHeight = 660;
-const topPadding = 420;
+const topPadding = 500;
 
 const totalHeight = topPadding + (state.cities.length * (cityHeight + margin)) + 80;
 
@@ -45,10 +45,10 @@ const rankX = (width - rankWidth) / 2;
 
 // fond flou général derrière les ranks + progression
 ctx.save();
-ctx.fillStyle='rgba(0,0,0,0.48)';
+ctx.fillStyle='rgba(0,0,0,0.72)';
 ctx.shadowColor='rgba(255,255,255,0.10)';
-ctx.shadowBlur=65;
-roundRect(ctx, 20, y - 85, width - 40, rankHeight + 430, 42, true, false);
+ctx.shadowBlur=110;
+roundRect(ctx, 12, y + rankHeight - 15, width - 24, 505, 42, true, false);
 ctx.restore();
 
 ctx.drawImage(rankImg, rankX, y, rankWidth, rankHeight);
@@ -62,7 +62,7 @@ ctx.textBaseline='middle';
 ctx.fillText(
 (city.name || 'Ville').toUpperCase(),
 width / 2,
-y + 178
+y + 148
 );
 
 let progressX = 70;
