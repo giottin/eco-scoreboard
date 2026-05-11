@@ -217,3 +217,36 @@ margin-top:0 !important;
 .city-card{
 margin-bottom:55px !important;
 }
+
+
+/* FINAL SIZE ADJUSTMENTS */
+
+.logo{
+height:190px !important;
+max-height:none !important;
+}
+
+.topbar{
+min-height:190px !important;
+}
+
+.rank-banner{
+height:92px !important;
+}
+
+.rank-image{
+width:760px !important;
+max-width:82% !important;
+height:auto !important;
+object-fit:contain !important;
+}
+
+.city-title{
+font-size:30px !important;
+transform:translateY(-1px);
+}
+
+.city-title-wrapper{
+height:92px !important;
+}
+
