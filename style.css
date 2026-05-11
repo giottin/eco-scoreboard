@@ -8,73 +8,54 @@ body{
 font-family:Arial,sans-serif;
 background:url('./fond.png') center center/cover fixed;
 min-height:100vh;
-padding:12px;
+padding:18px;
 color:white;
+overflow-x:hidden;
 }
 
 .overlay{
-background:rgba(0,0,0,0.72);
-backdrop-filter:blur(6px);
-border-radius:24px;
-padding:14px;
+background:rgba(0,0,0,0.58);
+backdrop-filter:blur(8px);
+border-radius:28px;
+padding:18px;
 }
 
 .topbar{
 display:flex;
 justify-content:space-between;
 align-items:flex-start;
-gap:14px;
-margin-bottom:18px;
-}
-
-.top-left{
-display:flex;
-flex-direction:column;
-gap:10px;
+margin-bottom:22px;
+gap:20px;
 }
 
 .logo{
-width:92px;
+width:120px;
 }
 
 .actions{
 display:flex;
-flex-direction:column;
 gap:10px;
+align-items:center;
+flex-wrap:wrap;
 }
 
-button,#cloudStatus{
-background:rgba(255,255,255,0.1);
-border:1px solid rgba(255,255,255,0.15);
+.actions button,#cloudStatus{
+background:rgba(0,0,0,0.75);
+border:1px solid rgba(255,255,255,0.12);
 color:white;
-padding:10px 14px;
+padding:12px 16px;
 border-radius:12px;
 font-weight:bold;
 }
 
-.city-card,.editor-card{
-background:rgba(0,0,0,0.48);
-border:1px solid rgba(255,255,255,0.08);
-border-radius:24px;
-padding:18px;
-margin-bottom:26px;
-}
-
-.city-top{
-position:relative;
-}
-
-.delete-city{
-position:absolute;
-right:0;
-top:0;
-font-size:18px;
+.city{
+margin-bottom:50px;
 }
 
 .city-rank{
 width:100%;
-max-width:340px;
-height:120px;
+max-width:420px;
+height:140px;
 margin:auto;
 position:relative;
 background-size:contain;
@@ -84,119 +65,107 @@ background-position:center;
 
 .rank-roman{
 position:absolute;
-top:6px;
+top:4px;
 left:50%;
 transform:translateX(-50%);
-font-size:28px;
+font-size:32px;
 font-weight:900;
+text-shadow:0 0 8px black;
 }
 
 .city-name{
 position:absolute;
 left:50%;
-top:50%;
+top:53%;
 transform:translate(-50%,-50%);
-width:75%;
+width:72%;
 text-align:center;
 font-size:22px;
 font-weight:800;
+text-shadow:0 0 10px black;
+white-space:nowrap;
+overflow:hidden;
+text-overflow:ellipsis;
 }
 
-.city-level-text{
-text-align:center;
-margin-top:6px;
-font-size:18px;
-font-weight:bold;
-}
-
-.city-input,.editor-input,.editor-task input{
-width:100%;
+.city-input{
+display:block;
+margin:8px auto 0 auto;
+width:220px;
 padding:10px;
 border:none;
 border-radius:10px;
 background:rgba(255,255,255,0.08);
 color:white;
-}
-
-.city-input{
-margin-top:12px;
 text-align:center;
 }
 
 .progress{
-margin-top:14px;
-height:10px;
-background:#111;
+margin-top:12px;
+height:18px;
+background:#0b0b0b;
 border-radius:999px;
 overflow:hidden;
 }
 
 .progress-fill{
 height:100%;
-background:linear-gradient(90deg,#1fd655,#7effa1);
+background:linear-gradient(90deg,#20c94f,#7cff92);
 }
 
-.levels,.editor-grid{
+.scale{
 display:grid;
-grid-template-columns:repeat(2,1fr);
-gap:12px;
-margin-top:18px;
+grid-template-columns:repeat(8,1fr);
+margin-top:6px;
+font-size:12px;
+font-weight:bold;
+text-align:center;
+}
+
+.levels{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:10px;
+margin-top:12px;
 }
 
 @media(min-width:900px){
-.levels,.editor-grid{
-grid-template-columns:repeat(4,1fr);
-}
-.actions{
-flex-direction:row;
+.levels{
+grid-template-columns:repeat(8,1fr);
 }
 }
 
 .level{
-background:rgba(255,255,255,0.06);
-padding:12px;
-border-radius:16px;
+background:rgba(0,0,0,0.55);
+padding:10px;
+border-radius:14px;
 }
 
 .level-title{
-background:#dccfb2;
+background:#ddd0b4;
 color:#24170b;
 padding:8px;
-border-radius:10px;
+border-radius:8px;
 font-weight:bold;
 text-align:center;
-margin-bottom:10px;
-font-size:14px;
-}
-
-.level-title-input{
-margin-bottom:10px;
+margin-bottom:8px;
+font-size:13px;
 }
 
 .task{
 display:flex;
 gap:8px;
 align-items:center;
-background:#dccfb2;
+background:#ddd0b4;
 color:#24170b;
 padding:8px;
-border-radius:10px;
+border-radius:8px;
 margin-bottom:8px;
-font-size:13px;
+font-size:12px;
 }
 
-.editor-task{
-background:transparent;
-padding:0;
-}
-
-.task input[type="checkbox"]{
+.task input{
+accent-color:#20c94f;
 width:18px;
 height:18px;
-accent-color:#1fd655;
-}
-
-.small-btn,.delete-btn{
-width:100%;
-margin-top:8px;
 }
