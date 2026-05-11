@@ -21,19 +21,16 @@ headers:{
 },
 body:JSON.stringify({
 id:'save1',
-content:state,
-updated_at:new Date().toISOString()
+content:state
 })
 }
 );
 
-setStatus('☁️ Sauvegarde cloud OK','#7eff83');
+setStatus('☁ Sauvegarde OK','#8cff9c');
 
 }catch(e){
-
 console.error(e);
-setStatus('❌ Erreur sauvegarde','#ff6666');
-
+setStatus('Erreur sauvegarde','#ff7070');
 }
 
 }
@@ -59,13 +56,11 @@ state.model=data[0].content.model || state.model;
 state.cities=data[0].content.cities || [];
 }
 
-setStatus('☁️ Cloud connecté','#7eff83');
+setStatus('☁ Cloud connecté','#8cff9c');
 
 }catch(e){
-
 console.error(e);
-setStatus('❌ Erreur cloud','#ff6666');
-
+setStatus('Erreur cloud','#ff7070');
 }
 
 }

@@ -1,7 +1,8 @@
 
+const ROMAN=['I','II','III','IV','V','VI','VII','VIII'];
+
 const state={
 editMode:false,
-
 model:{
 levels:[
 {name:'Palier I',tasks:['Tâche 1','Tâche 2']},
@@ -14,7 +15,6 @@ levels:[
 {name:'Palier VIII',tasks:['Tâche 1','Tâche 2']}
 ]
 },
-
 cities:[]
 };
 
@@ -33,52 +33,44 @@ checks:{}
 function syncCities(){
 state.cities.forEach(city=>{
 state.model.levels.forEach((level,l)=>{
-
-if(!city.checks[l]){
-city.checks[l]={};
-}
+if(!city.checks[l]) city.checks[l]={};
 
 level.tasks.forEach((task,t)=>{
 if(city.checks[l][t]===undefined){
 city.checks[l][t]=false;
 }
 });
-
 });
 });
 }
 
-function calculateProgress(city){
+function getCityRank(city){
 
-const total=state.model.levels.length;
-
-let completed=[];
+let completed=0;
 
 state.model.levels.forEach((level,l)=>{
 
-let valid=true;
+let ok=true;
 
 level.tasks.forEach((task,t)=>{
 if(!city.checks[l]?.[t]){
-valid=false;
+ok=false;
 }
 });
 
-if(valid && level.tasks.length>0){
-completed.push(l);
+if(ok && level.tasks.length>0){
+completed++;
 }
 
 });
+
+completed=Math.max(1,Math.min(8,completed));
 
 return{
-percent:total?Math.round((completed.length/total)*100):0,
-completed,
-rank:completed.length
+rank:completed,
+roman:ROMAN[completed-1],
+asset:`city_rank_${completed}.png`,
+progress:Math.round((completed/8)*100)
 };
 
-}
-
-function rankClass(rank){
-const names=['I','II','III','IV','V','VI','VII','VIII'];
-return 'rank-'+(names[Math.max(0,Math.min(rank-1,7))]||'I');
 }

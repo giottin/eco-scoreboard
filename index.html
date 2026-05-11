@@ -3,38 +3,30 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fantasy Dashboard V4</title>
-
-<link rel="stylesheet" href="./style.css">
-
+<title>Fantasy Dashboard V6</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div id="app">
-
-<div class="logo">
-<img src="./logo.png">
-</div>
-
-<div class="topbar">
+<div class="top-right-ui">
 <button id="toggleEditBtn">Modifier</button>
 <button id="addCityBtn">Ajouter ville</button>
 <button id="downloadBtn">Télécharger PNG</button>
+<div id="cloudStatus">Connexion...</div>
 </div>
 
-<div id="cloudStatus">Connexion...</div>
+<div class="logo">
+<img src="logo.png">
+</div>
 
 <div id="editorPanel"></div>
-
 <div id="citiesContainer"></div>
 
-</div>
-
-<script src="./config.js"></script>
-<script src="./storage.js"></script>
-<script src="./cloud.js"></script>
-<script src="./ui.js"></script>
-<script src="./app.js"></script>
+<script src="config.js"></script>
+<script src="storage.js"></script>
+<script src="cloud.js"></script>
+<script src="ui.js"></script>
+<script src="app.js"></script>
 
 </body>
 </html>

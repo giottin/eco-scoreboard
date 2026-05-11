@@ -10,11 +10,7 @@ return;
 
 let html=`
 <div class="city-card">
-
-<div class="editor-header">
-<h2>Ville modèle</h2>
-<button onclick="addLevel()">Ajouter palier</button>
-</div>
+<h2 class="editor-title">Ville modèle</h2>
 
 <div class="editor-grid">
 `;
@@ -24,17 +20,13 @@ state.model.levels.forEach((level,l)=>{
 html+=`
 <div class="level">
 
-<div class="editor-header">
-
+<div style="display:flex;gap:8px;margin-bottom:10px;">
 <input class="level-title"
 value="${level.name}"
 onchange="renameLevel(${l},this.value)">
 
 <button class="delete-btn"
-onclick="deleteLevel(${l})">
-✕
-</button>
-
+onclick="deleteLevel(${l})">✕</button>
 </div>
 `;
 
@@ -48,9 +40,7 @@ value="${task}"
 onchange="renameTask(${l},${t},this.value)">
 
 <button class="delete-btn"
-onclick="deleteTask(${l},${t})">
-✕
-</button>
+onclick="deleteTask(${l},${t})">✕</button>
 
 </div>
 `;
@@ -63,11 +53,11 @@ Ajouter tâche
 </button>
 `;
 
-html+=`</div>`;
+html+='</div>';
 
 });
 
-html+=`</div></div>`;
+html+='</div></div>';
 
 panel.innerHTML=html;
 
@@ -78,55 +68,53 @@ function renderCities(){
 const container=document.getElementById('citiesContainer');
 
 state.cities.sort((a,b)=>
-calculateProgress(b).percent-
-calculateProgress(a).percent
+getCityRank(b).rank-getCityRank(a).rank
 );
 
 container.innerHTML='';
 
 state.cities.forEach(city=>{
 
-const progress=calculateProgress(city);
+const rank=getCityRank(city);
 
 let html=`
-<div class="city-card ${rankClass(progress.rank)}">
+<div class="city-card">
 
-<div class="city-name-wrapper">
+<div class="city-header">
 
-<input class="city-name"
-value="${city.name}"
-onchange="renameCity('${city.id}',this.value)">
+<div class="city-rank-header"
+style="background-image:url('${rank.asset}')">
+
+<div class="city-rank">${rank.roman}</div>
+
+<div class="city-title">
+${city.name}
+</div>
 
 </div>
 
-<div class="progress-wrapper">
+</div>
 
 <div class="progress">
 <div class="progress-fill"
-style="width:${progress.percent}%">
-</div>
+style="width:${rank.progress}%"></div>
 </div>
 
 <div class="progress-steps">
 `;
 
-for(let i=1;i<=state.model.levels.length;i++){
+for(let i=1;i<=8;i++){
 html+=`<div>${i}</div>`;
 }
 
-html+=`
-</div>
-</div>
+html+=`</div>`;
 
-<div class="levels-grid">
-`;
+html+=`<div class="levels-grid">`;
 
 state.model.levels.forEach((level,l)=>{
 
-const completed=progress.completed.includes(l);
-
 html+=`
-<div class="level ${completed?'completed':''}">
+<div class="level">
 
 <div class="level-title">
 ${level.name}
@@ -150,11 +138,11 @@ onchange="toggleTask('${city.id}',${l},${t},this.checked)">
 
 });
 
-html+=`</div>`;
+html+='</div>';
 
 });
 
-html+=`</div></div>`;
+html+='</div></div>';
 
 container.innerHTML+=html;
 
