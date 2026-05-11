@@ -436,3 +436,17 @@ URL.revokeObjectURL(url);
 },'image/jpeg',0.9);
 
 }
+
+
+window.addEventListener('DOMContentLoaded',()=>{
+
+if(!document.querySelector('.background-layer')){
+
+const bg=document.createElement('div');
+bg.className='background-layer';
+
+document.body.prepend(bg);
+
+}
+
+});

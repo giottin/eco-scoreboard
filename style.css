@@ -1,12 +1,16 @@
 @import url("https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&display=swap");
 
 
+
 body{
 margin:0;
 font-family:Arial;
-background:url('fond.png') center/cover fixed;
 color:white;
+background:#000;
+position:relative;
+z-index:1;
 }
+
 
 .overlay{
 background:rgba(0,0,0,.72);
@@ -282,5 +286,60 @@ transform:translate(-50%,-50%) !important;
 text-align:center !important;
 width:48% !important;
 line-height:1 !important;
+}
+
+
+
+.background-layer{
+position:fixed;
+inset:0;
+background:
+linear-gradient(rgba(0,0,0,.45),rgba(0,0,0,.45)),
+url('fond.png') center center / cover no-repeat;
+z-index:-1;
+}
+
+.overlay{
+position:relative;
+z-index:2;
+background:transparent !important;
+}
+
+/* TRUE CENTERING */
+.rank-panel{
+display:flex !important;
+align-items:center !important;
+justify-content:center !important;
+position:relative;
+background-repeat:no-repeat !important;
+background-position:center center !important;
+background-size:contain !important;
+}
+
+.city-name-input{
+position:relative !important;
+left:auto !important;
+top:auto !important;
+transform:none !important;
+margin:0 auto !important;
+display:block !important;
+width:54% !important;
+text-align:center !important;
+line-height:1 !important;
+padding:0 !important;
+}
+
+/* EXPORT MODE */
+.export-mode .background-layer{
+opacity:1 !important;
+}
+
+.export-mode button{
+display:none !important;
+}
+
+.export-mode .overlay{
+padding-top:20px;
+padding-bottom:20px;
 }
 
