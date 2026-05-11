@@ -8,54 +8,73 @@ body{
 font-family:Arial,sans-serif;
 background:url('./fond.png') center center/cover fixed;
 min-height:100vh;
-padding:18px;
+padding:12px;
 color:white;
-overflow-x:hidden;
 }
 
 .overlay{
-background:rgba(0,0,0,0.58);
-backdrop-filter:blur(8px);
-border-radius:28px;
-padding:18px;
+background:rgba(0,0,0,0.72);
+backdrop-filter:blur(6px);
+border-radius:24px;
+padding:14px;
 }
 
 .topbar{
 display:flex;
 justify-content:space-between;
 align-items:flex-start;
-margin-bottom:22px;
-gap:20px;
+gap:14px;
+margin-bottom:18px;
+}
+
+.top-left{
+display:flex;
+flex-direction:column;
+gap:10px;
 }
 
 .logo{
-width:120px;
+width:92px;
 }
 
 .actions{
 display:flex;
+flex-direction:column;
 gap:10px;
-align-items:center;
-flex-wrap:wrap;
 }
 
-.actions button,#cloudStatus{
-background:rgba(0,0,0,0.75);
-border:1px solid rgba(255,255,255,0.12);
+button,#cloudStatus{
+background:rgba(255,255,255,0.1);
+border:1px solid rgba(255,255,255,0.15);
 color:white;
-padding:12px 16px;
+padding:10px 14px;
 border-radius:12px;
 font-weight:bold;
 }
 
-.city{
-margin-bottom:50px;
+.city-card,.editor-card{
+background:rgba(0,0,0,0.48);
+border:1px solid rgba(255,255,255,0.08);
+border-radius:24px;
+padding:18px;
+margin-bottom:26px;
+}
+
+.city-top{
+position:relative;
+}
+
+.delete-city{
+position:absolute;
+right:0;
+top:0;
+font-size:18px;
 }
 
 .city-rank{
 width:100%;
-max-width:420px;
-height:140px;
+max-width:340px;
+height:120px;
 margin:auto;
 position:relative;
 background-size:contain;
@@ -65,107 +84,119 @@ background-position:center;
 
 .rank-roman{
 position:absolute;
-top:4px;
+top:6px;
 left:50%;
 transform:translateX(-50%);
-font-size:32px;
+font-size:28px;
 font-weight:900;
-text-shadow:0 0 8px black;
 }
 
 .city-name{
 position:absolute;
 left:50%;
-top:53%;
+top:50%;
 transform:translate(-50%,-50%);
-width:72%;
+width:75%;
 text-align:center;
 font-size:22px;
 font-weight:800;
-text-shadow:0 0 10px black;
-white-space:nowrap;
-overflow:hidden;
-text-overflow:ellipsis;
 }
 
-.city-input{
-display:block;
-margin:8px auto 0 auto;
-width:220px;
+.city-level-text{
+text-align:center;
+margin-top:6px;
+font-size:18px;
+font-weight:bold;
+}
+
+.city-input,.editor-input,.editor-task input{
+width:100%;
 padding:10px;
 border:none;
 border-radius:10px;
 background:rgba(255,255,255,0.08);
 color:white;
+}
+
+.city-input{
+margin-top:12px;
 text-align:center;
 }
 
 .progress{
-margin-top:12px;
-height:18px;
-background:#0b0b0b;
+margin-top:14px;
+height:10px;
+background:#111;
 border-radius:999px;
 overflow:hidden;
 }
 
 .progress-fill{
 height:100%;
-background:linear-gradient(90deg,#20c94f,#7cff92);
+background:linear-gradient(90deg,#1fd655,#7effa1);
 }
 
-.scale{
+.levels,.editor-grid{
 display:grid;
-grid-template-columns:repeat(8,1fr);
-margin-top:6px;
-font-size:12px;
-font-weight:bold;
-text-align:center;
-}
-
-.levels{
-display:grid;
-grid-template-columns:repeat(4,1fr);
-gap:10px;
-margin-top:12px;
+grid-template-columns:repeat(2,1fr);
+gap:12px;
+margin-top:18px;
 }
 
 @media(min-width:900px){
-.levels{
-grid-template-columns:repeat(8,1fr);
+.levels,.editor-grid{
+grid-template-columns:repeat(4,1fr);
+}
+.actions{
+flex-direction:row;
 }
 }
 
 .level{
-background:rgba(0,0,0,0.55);
-padding:10px;
-border-radius:14px;
+background:rgba(255,255,255,0.06);
+padding:12px;
+border-radius:16px;
 }
 
 .level-title{
-background:#ddd0b4;
+background:#dccfb2;
 color:#24170b;
 padding:8px;
-border-radius:8px;
+border-radius:10px;
 font-weight:bold;
 text-align:center;
-margin-bottom:8px;
-font-size:13px;
+margin-bottom:10px;
+font-size:14px;
+}
+
+.level-title-input{
+margin-bottom:10px;
 }
 
 .task{
 display:flex;
 gap:8px;
 align-items:center;
-background:#ddd0b4;
+background:#dccfb2;
 color:#24170b;
 padding:8px;
-border-radius:8px;
+border-radius:10px;
 margin-bottom:8px;
-font-size:12px;
+font-size:13px;
 }
 
-.task input{
-accent-color:#20c94f;
+.editor-task{
+background:transparent;
+padding:0;
+}
+
+.task input[type="checkbox"]{
 width:18px;
 height:18px;
+accent-color:#1fd655;
+}
+
+.small-btn,.delete-btn{
+width:100%;
+margin-top:8px;
 }
