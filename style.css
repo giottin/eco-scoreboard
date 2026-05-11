@@ -343,3 +343,76 @@ padding-top:20px;
 padding-bottom:20px;
 }
 
+
+
+/* FINAL ALIGNMENT */
+
+.logo{
+height:520px !important;
+position:relative !important;
+left:50% !important;
+transform:translateX(-50%) !important;
+top:-48px !important;
+z-index:20 !important;
+}
+
+.topbar{
+min-height:380px !important;
+margin-bottom:-120px !important;
+justify-content:center !important;
+align-items:flex-start !important;
+}
+
+.actions{
+position:absolute !important;
+right:24px !important;
+top:24px !important;
+z-index:30 !important;
+}
+
+.rank-banner{
+height:145px !important;
+margin-bottom:38px !important;
+overflow:visible !important;
+position:relative !important;
+}
+
+.rank-image{
+width:480px !important;
+max-width:56% !important;
+height:auto !important;
+object-fit:contain !important;
+position:absolute !important;
+left:50% !important;
+top:-42px !important;
+transform:translateX(-50%) !important;
+}
+
+.city-title-wrapper{
+position:absolute !important;
+left:50% !important;
+top:28px !important;
+transform:translateX(-50%) !important;
+width:240px !important;
+height:64px !important;
+display:flex !important;
+align-items:center !important;
+justify-content:center !important;
+z-index:8 !important;
+pointer-events:none !important;
+}
+
+.city-title{
+pointer-events:auto !important;
+width:100% !important;
+height:64px !important;
+display:flex !important;
+align-items:center !important;
+justify-content:center !important;
+text-align:center !important;
+font-size:24px !important;
+font-weight:800 !important;
+line-height:1 !important;
+transform:translateY(8px) !important;
+text-shadow:0 2px 6px rgba(0,0,0,0.9) !important;
+}
