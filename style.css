@@ -416,3 +416,95 @@ line-height:1 !important;
 transform:translateY(8px) !important;
 text-shadow:0 2px 6px rgba(0,0,0,0.9) !important;
 }
+
+
+/* CHATGPT FIXED ALIGNMENT */
+.topbar{
+display:flex !important;
+flex-direction:column !important;
+align-items:center !important;
+justify-content:flex-start !important;
+min-height:auto !important;
+margin-bottom:10px !important;
+padding-top:10px !important;
+position:relative !important;
+}
+
+.logo{
+width:min(360px,72vw) !important;
+height:auto !important;
+max-height:none !important;
+object-fit:contain !important;
+display:block !important;
+margin:0 auto 18px auto !important;
+left:auto !important;
+top:auto !important;
+transform:none !important;
+position:relative !important;
+}
+
+.actions{
+position:relative !important;
+right:auto !important;
+top:auto !important;
+justify-content:center !important;
+margin-bottom:18px !important;
+}
+
+.city-rank-header{
+position:relative !important;
+height:165px !important;
+background-repeat:no-repeat !important;
+background-position:center center !important;
+background-size:contain !important;
+}
+
+.city-title{
+position:absolute !important;
+left:50% !important;
+top:58% !important;
+transform:translate(-50%,-50%) !important;
+width:52% !important;
+display:flex !important;
+align-items:center !important;
+justify-content:center !important;
+text-align:center !important;
+font-size:34px !important;
+font-family:'Cinzel',serif !important;
+font-weight:800 !important;
+line-height:1 !important;
+text-transform:uppercase !important;
+letter-spacing:1px !important;
+text-shadow:0 2px 8px rgba(0,0,0,.95) !important;
+z-index:5 !important;
+}
+
+.city-rank{
+position:absolute !important;
+left:50% !important;
+top:26% !important;
+transform:translateX(-50%) !important;
+font-size:34px !important;
+z-index:6 !important;
+}
+
+@media(max-width:700px){
+.logo{
+width:min(280px,82vw) !important;
+}
+
+.city-title{
+font-size:24px !important;
+width:60% !important;
+top:60% !important;
+}
+
+.city-rank{
+font-size:26px !important;
+top:28% !important;
+}
+
+.city-rank-header{
+height:140px !important;
+}
+}
