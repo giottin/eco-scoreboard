@@ -1,149 +1,124 @@
 
-window.ExportRenderer={
+window.ExportRenderer = {
 
 async exportScoreboard(){
 
 await document.fonts.ready;
 
-const cards=[...document.querySelectorAll('.city-card')];
+const canvas = document.createElement('canvas');
+const ctx = canvas.getContext('2d');
 
-const width=1600;
-const cardHeight=430;
-const spacing=40;
-const headerHeight=180;
-const footer=60;
+ctx.imageSmoothingEnabled = true;
+ctx.imageSmoothingQuality = 'high';
 
-const totalHeight=headerHeight+(cards.length*(cardHeight+spacing))+footer;
+const width = 1600;
+const cardHeight = 420;
+const margin = 40;
+const headerHeight = 180;
 
-const canvas=document.createElement('canvas');
-canvas.width=width;
-canvas.height=totalHeight;
+const height = headerHeight + (state.cities.length * (cardHeight + margin)) + 100;
 
-const ctx=canvas.getContext('2d');
+canvas.width = width;
+canvas.height = height;
 
-ctx.imageSmoothingEnabled=true;
-ctx.imageSmoothingQuality='high';
+const bg = await loadImage('fond.png');
+ctx.drawImage(bg,0,0,width,height);
 
-const bg=await loadImage('fond.png');
+ctx.fillStyle='rgba(0,0,0,0.50)';
+ctx.fillRect(0,0,width,height);
 
-ctx.drawImage(bg,0,0,width,totalHeight);
+const logo = await loadImage('logo.png');
+ctx.drawImage(logo,40,20,140,140);
 
-ctx.fillStyle='rgba(0,0,0,0.42)';
-ctx.fillRect(0,0,width,totalHeight);
+ctx.fillStyle='white';
+ctx.font='700 54px Arial';
+ctx.fillText('ECO SCOREBOARD',220,95);
 
-const logo=await loadImage('logo.png');
-
-const logoW=520;
-const logoH=520;
-
-ctx.drawImage(
-logo,
-(width/2)-(logoW/2),
--70,
-logoW,
-logoH
-);
-
-let currentY=170;
+let y = 180;
 
 for(const city of state.cities){
 
-const rank=getCityRank(city);
+const rank = getCityRank(city);
 
-const banner=await loadImage(rank.asset);
+const rankImg = await loadImage(rank.asset);
 
-const bannerW=560;
-const bannerH=186;
+ctx.drawImage(rankImg,40,y,1520,120);
 
-ctx.drawImage(
-banner,
-(width/2)-(bannerW/2),
-currentY-38,
-bannerW,
-bannerH
-);
-
-ctx.textAlign='center';
-ctx.textBaseline='middle';
 ctx.fillStyle='white';
-ctx.font='800 24px Arial';
+ctx.font='700 42px Arial';
+ctx.textAlign='center';
+ctx.fillText(city.name || 'Ville',800,y+72);
 
-ctx.fillText(
-city.name,
-width/2,
-currentY+6
-);
-
-let px=70;
+let progressX = 60;
 
 state.model.levels.forEach((level,index)=>{
 
-const filled=index<getCompletedLevels(city);
+const filled = index < getCompletedLevels(city);
 
-ctx.fillStyle=filled ? '#41ff71' : '#1f1f1f';
+ctx.fillStyle = filled ? '#38ff63' : '#232323';
 
-roundRect(ctx,px,currentY+80,170,18,9,true,false);
+roundRect(ctx,progressX,y+145,170,16,8,true,false);
 
-px+=182;
+progressX += 185;
 
 });
 
-let gx=40;
-let gy=currentY+120;
+let lx = 40;
+let ly = y + 190;
 
 state.model.levels.forEach((level,l)=>{
 
-ctx.fillStyle='rgba(12,12,12,0.72)';
-roundRect(ctx,gx,gy,350,170,14,true,false);
+ctx.fillStyle='rgba(18,18,18,0.82)';
+roundRect(ctx,lx,ly,340,170,14,true,false);
 
-ctx.strokeStyle='rgba(255,255,255,0.08)';
-ctx.strokeRect(gx,gy,350,170);
+ctx.strokeStyle='rgba(255,255,255,0.15)';
+ctx.strokeRect(lx,ly,340,170);
 
 ctx.fillStyle='white';
+ctx.font='700 22px Arial';
 ctx.textAlign='left';
-ctx.textBaseline='alphabetic';
 
-ctx.font='700 21px Arial';
-ctx.fillText(level.name,gx+18,gy+34);
+ctx.fillText(level.name,lx+16,ly+34);
 
 ctx.font='18px Arial';
 
-let ty=gy+72;
+let ty = ly + 70;
 
 level.tasks.forEach((task,t)=>{
 
-const checked=city.checks?.[l]?.[t];
+const checked = city.checks?.[l]?.[t];
 
-ctx.fillStyle=checked ? '#41ff71' : '#8c8c8c';
+ctx.fillStyle = checked ? '#38ff63' : '#888';
 
-ctx.fillRect(gx+18,ty-14,16,16);
+ctx.fillRect(lx+16,ty-14,16,16);
 
 ctx.fillStyle='white';
-ctx.fillText(task,gx+48,ty);
 
-ty+=30;
+ctx.fillText(task,lx+44,ty);
+
+ty += 28;
 
 });
 
-gx+=370;
+lx += 370;
 
-if(gx+350>width){
+if(lx + 340 > width){
 
-gx=40;
-gy+=190;
+lx = 40;
+ly += 200;
 
 }
 
 });
 
-currentY+=cardHeight+spacing;
+y += cardHeight + margin;
 
 }
 
-const link=document.createElement('a');
+const link = document.createElement('a');
 
-link.download='eco-scoreboard.png';
-link.href=canvas.toDataURL('image/png',1);
+link.download='eco-scoreboard-hd.png';
+link.href = canvas.toDataURL('image/png');
 
 link.click();
 
@@ -151,35 +126,39 @@ link.click();
 
 };
 
-function loadImage(src){
-
-return new Promise((resolve,reject)=>{
-
-const img=new Image();
-
-img.onload=()=>resolve(img);
-img.onerror=reject;
-img.src=src;
-
-});
-
-}
-
 function roundRect(ctx,x,y,width,height,radius,fill,stroke){
 
 ctx.beginPath();
-ctx.moveTo(x+radius,y);
-ctx.lineTo(x+width-radius,y);
-ctx.quadraticCurveTo(x+width,y,x+width,y+radius);
-ctx.lineTo(x+width,y+height-radius);
-ctx.quadraticCurveTo(x+width,y+height,x+width-radius,y+height);
-ctx.lineTo(x+radius,y+height);
-ctx.quadraticCurveTo(x,y+height,x,y+height-radius);
-ctx.lineTo(x,y+radius);
-ctx.quadraticCurveTo(x,y,x+radius,y);
+
+ctx.moveTo(x + radius, y);
+ctx.lineTo(x + width - radius, y);
+ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+ctx.lineTo(x + width, y + height - radius);
+ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+ctx.lineTo(x + radius, y + height);
+ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+ctx.lineTo(x, y + radius);
+ctx.quadraticCurveTo(x, y, x + radius, y);
 ctx.closePath();
 
 if(fill) ctx.fill();
 if(stroke) ctx.stroke();
+
+}
+
+function loadImage(src){
+
+return new Promise((resolve,reject)=>{
+
+const img = new Image();
+
+img.crossOrigin='anonymous';
+
+img.onload=()=>resolve(img);
+img.onerror=reject;
+
+img.src=src;
+
+});
 
 }
