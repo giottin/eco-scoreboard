@@ -33,13 +33,13 @@ ctx.fillRect(0,0,width,totalHeight);
 
 const logo=await loadImage('logo.png');
 
-const logoW=320;
-const logoH=320;
+const logoW=520;
+const logoH=520;
 
 ctx.drawImage(
 logo,
 (width/2)-(logoW/2),
--10,
+-70,
 logoW,
 logoH
 );
@@ -52,13 +52,13 @@ const rank=getCityRank(city);
 
 const banner=await loadImage(rank.asset);
 
-const bannerW=980;
-const bannerH=326;
+const bannerW=560;
+const bannerH=186;
 
 ctx.drawImage(
 banner,
 (width/2)-(bannerW/2),
-currentY-98,
+currentY-38,
 bannerW,
 bannerH
 );
@@ -66,12 +66,12 @@ bannerH
 ctx.textAlign='center';
 ctx.textBaseline='middle';
 ctx.fillStyle='white';
-ctx.font='700 30px Arial';
+ctx.font='800 24px Arial';
 
 ctx.fillText(
 city.name,
 width/2,
-currentY+22
+currentY+6
 );
 
 let px=70;
