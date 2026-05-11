@@ -1,183 +1,53 @@
 
-const ROMAN=['I','II','III','IV','V','VI','VII','VIII'];
+function debounce(fn,delay=700){
 
-let state={
-editMode:false,
-model:{
-levels:[
-{name:'Palier 1',tasks:['Tâche 1','Tâche 2']},
-{name:'Palier 2',tasks:['Tâche 1','Tâche 2']},
-{name:'Palier 3',tasks:['Tâche 1','Tâche 2']},
-{name:'Palier 4',tasks:['Tâche 1','Tâche 2']}
-]
-},
-cities:[]
+let timer;
+
+return (...args)=>{
+
+clearTimeout(timer);
+
+timer=setTimeout(()=>{
+fn(...args);
+},delay);
+
 };
 
-function cityTemplate(name=''){
-return {
-id:crypto.randomUUID(),
-name,
-checks:{}
-}
 }
 
-function getCompletedLevels(city){
-let completed=0;
-state.model.levels.forEach((level,l)=>{
-const ok=level.tasks.every((t,i)=>city.checks?.[l]?.[i]);
-if(ok) completed++;
-});
-return completed;
-}
+const saveDebounced = debounce(saveCloud,800);
 
-function getRank(city){
-const completed=getCompletedLevels(city);
-if(completed<=0) return 0;
-return Math.min(8,completed);
-}
+function render(){
 
-function renderProgress(city){
-const total=state.model.levels.length;
-const completed=getCompletedLevels(city);
-let html='<div class="segmented-progress">';
-for(let i=0;i<total;i++){
-html+=`<div class="segment ${i<completed?'filled':''}"></div>`;
-}
-html+='</div>';
-return html;
-}
+syncCities();
 
-function getNameClass(name){
-if(name.length > 20) return 'tiny';
-if(name.length > 14) return 'small';
-return '';
-}
+renderEditor();
 
+const container = document.getElementById('cities');
 
-
-function addLevel(){
-state.model.levels.push({
-name:`Palier ${state.model.levels.length+1}`,
-tasks:['Nouvelle tâche']
-});
-render();
-save();
-}
-
-function deleteLevel(index){
-state.model.levels.splice(index,1);
-render();
-save();
-}
-
-function addTask(levelIndex){
-state.model.levels[levelIndex].tasks.push('Nouvelle tâche');
-render();
-save();
-}
-
-function deleteTask(levelIndex,taskIndex){
-state.model.levels[levelIndex].tasks.splice(taskIndex,1);
-render();
-save();
-}
-
-function renderEditor(){
-const panel=document.getElementById('editorPanel');
-
-if(!state.editMode){
-panel.innerHTML='';
-return;
-}
-
-let html=`<div class="editor-card">
-<h2 class="editor-title">VILLE MODÈLE</h2>
-<div class="levels-grid">`;
-
-state.model.levels.forEach((level,l)=>{
-html+=`<div class="level-box">
-<input class="level-name-input"
-value="${level.name}"
-onchange="renameLevel(${l},this.value)">`;
-
-level.tasks.forEach((task,t)=>{
-html+=`
-<div class="task-edit-row">
-<input class="task-input"
-value="${task}"
-onchange="renameTask(${l},${t},this.value)">
-
-<button
-class="mini-delete"
-onclick="deleteTask(${l},${t})">✕</button>
-</div>
-`;
-});
-
-html+=`
-<div class="editor-actions-row">
-<button onclick="addTask(${l})">+ Élément</button>
-<button class="danger-btn" onclick="deleteLevel(${l})">Supprimer palier</button>
-</div>
-`;
-
-html+='</div>';
-});
-
-html+=`
-<div class="global-editor-actions">
-<button class="add-level-btn" onclick="addLevel()">+ Ajouter un palier</button>
-</div>
-`;
-
-html+='</div></div>';
-
-panel.innerHTML=html;
-}
-
-
-function getCityScore(city){
-const completed=getCompletedLevels(city);
-let totalChecks=0;
-
-Object.values(city.checks || {}).forEach(level=>{
-Object.values(level || {}).forEach(v=>{
-if(v) totalChecks++;
-});
-});
-
-return completed * 1000 + totalChecks;
-}
-
-function sortCitiesByProgress(){
-state.cities.sort((a,b)=>getCityScore(b)-getCityScore(a));
-}
-
-function renderCities(){
-sortCitiesByProgress();
-const container=document.getElementById('cities');
 container.innerHTML='';
 
 state.cities.forEach(city=>{
 
-const rank=getRank(city);
+const rank = getCityRank(city);
 
-let levels='';
+const card = document.createElement('div');
+card.className='city-card';
+
+let levelsHTML='';
 
 state.model.levels.forEach((level,l)=>{
 
-levels+=`<div class="level-box">
-<div class="level-title">${level.name}</div>`;
+let tasksHTML='';
 
 level.tasks.forEach((task,t)=>{
 
-levels+=`
+const checked = city.checks[l]?.[t];
+
+tasksHTML += `
 <label class="task-row">
-<input
-type="checkbox"
-class="green-check"
-${city.checks?.[l]?.[t]?'checked':''}
+<input type="checkbox"
+${checked ? 'checked' : ''}
 onchange="toggleTask('${city.id}',${l},${t},this.checked)">
 <span>${task}</span>
 </label>
@@ -185,272 +55,243 @@ onchange="toggleTask('${city.id}',${l},${t},this.checked)">
 
 });
 
-levels+='</div>';
-
-});
-
-container.innerHTML += `
-<div class="city-card">
-
-<button
-class="delete-city"
-onclick="deleteCity('${city.id}')">🗑</button>
-
-<div
-class="rank-panel"
-style="background-image:${rank>0?`url('city_rank_${rank}.png')`:'none'}">
-
-<input
-class="city-name-input ${getNameClass(city.name)}"
-value="${city.name}"
-placeholder="Nom de ville"
-onchange="renameCity('${city.id}',this.value)" oninput="updateCityNameOnly(this.value,'${city.id}')">
-
-</div>
-
-${renderProgress(city)}
-
-<div class="levels-grid">
-${levels}
-</div>
-
+levelsHTML += `
+<div class="level-box">
+<h3>${level.name}</h3>
+${tasksHTML}
 </div>
 `;
 
 });
+
+card.innerHTML = `
+<div class="rank-panel" style="background-image:url('${rank.asset}')">
+<div class="rank-overlay">
+<input
+class="city-name-input"
+value="${city.name}"
+onchange="renameCity('${city.id}',this.value)"
+placeholder="Nom de ville">
+</div>
+</div>
+
+<div class="segmented-progress">
+${state.model.levels.map((lvl,index)=>{
+const filled = index < getCompletedLevels(city);
+return `<div class="segment ${filled ? 'filled' : ''}"></div>`;
+}).join('')}
+</div>
+
+<div class="levels-grid">
+${levelsHTML}
+</div>
+
+<div class="city-actions">
+<button onclick="deleteCity('${city.id}')">Supprimer</button>
+</div>
+`;
+
+container.appendChild(card);
+
+});
+
 }
 
-function render(){
-renderEditor();
-renderCities();
+function renderEditor(){
+
+const panel = document.getElementById('editorPanel');
+
+if(!state.editMode){
+
+panel.innerHTML='';
+
+return;
+
 }
 
+let html = `
+<div class="editor-card">
+<h2 class="editor-title">Configuration des paliers</h2>
+`;
 
-function updateCityNameOnly(value,id){
-const city=state.cities.find(c=>c.id===id);
-city.name=value;
+state.model.levels.forEach((level,l)=>{
 
-clearTimeout(window.citySaveTimer);
+html += `
+<div class="editor-level">
+<input
+class="level-name-input"
+value="${level.name}"
+onchange="renameLevel(${l},this.value)">
 
-window.citySaveTimer=setTimeout(()=>{
-save();
-},300);
+<button onclick="deleteLevel(${l})">Supprimer palier</button>
+
+<div class="editor-tasks">
+`;
+
+level.tasks.forEach((task,t)=>{
+
+html += `
+<div class="editor-task-row">
+<input
+value="${task}"
+onchange="renameTask(${l},${t},this.value)">
+<button onclick="deleteTask(${l},${t})">X</button>
+</div>
+`;
+
+});
+
+html += `
+<button onclick="addTask(${l})">Ajouter tâche</button>
+</div>
+</div>
+`;
+
+});
+
+html += `
+<button onclick="addLevel()">Ajouter palier</button>
+</div>
+`;
+
+panel.innerHTML = html;
+
+}
+
+function addCity(){
+
+state.cities.push(createCity('Nouvelle ville'));
+
+syncCities();
+
+render();
+
+saveDebounced();
+
+}
+
+function deleteCity(id){
+
+state.cities = state.cities.filter(c=>c.id !== id);
+
+render();
+
+saveDebounced();
+
 }
 
 function renameCity(id,value){
-const city=state.cities.find(c=>c.id===id);
+
+const city = state.cities.find(c=>c.id===id);
+
+if(city){
 city.name=value;
-save();
-render();
 }
 
-function toggleTask(id,l,t,v){
-const city=state.cities.find(c=>c.id===id);
+saveDebounced();
+
+}
+
+function toggleTask(cityId,l,t,checked){
+
+const city = state.cities.find(c=>c.id===cityId);
 
 if(!city.checks[l]){
 city.checks[l]={};
 }
 
-city.checks[l][t]=v;
+city.checks[l][t]=checked;
 
 render();
-save();
-}
 
-function renameLevel(l,v){
-state.model.levels[l].name=v;
-render();
-save();
-}
+saveDebounced();
 
-function renameTask(l,t,v){
-state.model.levels[l].tasks[t]=v;
-render();
-save();
-}
-
-function deleteCity(id){
-state.cities=state.cities.filter(c=>c.id!==id);
-render();
-save();
-}
-
-
-function downloadScoreboardImage(){
-
-const target=document.querySelector('#cities');
-
-if(!window.html2canvas){
-alert('Chargement du module image...');
-const script=document.createElement('script');
-script.src='https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js';
-script.onload=()=>downloadScoreboardImage();
-document.body.appendChild(script);
-return;
-}
-
-html2canvas(target,{
-backgroundColor:null,
-scale:1.2,
-useCORS:true
-}).then(canvas=>{
-
-canvas.toBlob((blob)=>{
-
-const url=URL.createObjectURL(blob);
-const a=document.createElement('a');
-
-a.href=url;
-a.download='eco-scoreboard.jpg';
-
-a.click();
-
-URL.revokeObjectURL(url);
-
-},'image/jpeg',0.82);
-
-});
-}
-
-function addCity(){
-state.cities.push(cityTemplate(''));
-render();
-save();
 }
 
 function toggleEdit(){
-state.editMode=!state.editMode;
-render();
-}
 
-async function save(){
-localStorage.setItem('eco_state_v12',JSON.stringify(state));
-}
-
-function load(){
-const data=localStorage.getItem('eco_state_v12');
-if(data){
-state=JSON.parse(data);
-}
-}
-
-load();
-
-if(state.cities.length===0){
-state.cities=[cityTemplate(''),cityTemplate('')];
-}
+state.editMode = !state.editMode;
 
 render();
 
-
-setTimeout(()=>{
-
-const topbar=document.querySelector('.actions');
-
-if(topbar && !document.querySelector('.download-btn')){
-
-const btn=document.createElement('button');
-btn.innerText='📸 Télécharger image';
-btn.className='download-btn';
-btn.onclick=downloadScoreboardImage;
-
-topbar.appendChild(btn);
-
 }
 
-},200);
+function addLevel(){
 
-
-async function prepareExportMode(){
-
-document.body.classList.add('export-mode');
-
-if(document.fonts && document.fonts.ready){
-await document.fonts.ready;
-}
-
-const images=[...document.images];
-
-await Promise.all(images.map(img=>{
-if(img.complete) return Promise.resolve();
-return new Promise(res=>{
-img.onload=res;
-img.onerror=res;
-});
-}));
-
-}
-
-function cleanupExportMode(){
-document.body.classList.remove('export-mode');
-}
-
-async function downloadScoreboardImage(){
-
-const target=document.querySelector('.overlay');
-
-if(!window.html2canvas){
-
-const script=document.createElement('script');
-script.src='https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js';
-
-script.onload=()=>downloadScoreboardImage();
-
-document.body.appendChild(script);
-
-return;
-}
-
-await prepareExportMode();
-
-const buttons=document.querySelectorAll('button');
-buttons.forEach(btn=>btn.style.visibility='hidden');
-
-const canvas=await html2canvas(target,{
-backgroundColor:null,
-useCORS:true,
-scale:2,
-logging:false,
-scrollY:-window.scrollY,
-windowWidth:document.documentElement.scrollWidth,
-windowHeight:document.documentElement.scrollHeight
+state.model.levels.push({
+name:`Palier ${state.model.levels.length+1}`,
+tasks:['Nouvelle tâche']
 });
 
-buttons.forEach(btn=>btn.style.visibility='');
+syncCities();
 
-cleanupExportMode();
+render();
 
-canvas.toBlob((blob)=>{
-
-const url=URL.createObjectURL(blob);
-
-const a=document.createElement('a');
-
-a.href=url;
-a.download='eco-scoreboard-export.jpg';
-
-a.click();
-
-URL.revokeObjectURL(url);
-
-},'image/jpeg',0.9);
+saveDebounced();
 
 }
 
+function deleteLevel(index){
 
-window.addEventListener('DOMContentLoaded',()=>{
+state.model.levels.splice(index,1);
 
-if(!document.querySelector('.background-layer')){
+syncCities();
 
-const bg=document.createElement('div');
-bg.className='background-layer';
+render();
 
-document.body.prepend(bg);
+saveDebounced();
 
 }
 
-});
+function renameLevel(index,value){
 
+state.model.levels[index].name = value;
+
+saveDebounced();
+
+}
+
+function addTask(levelIndex){
+
+state.model.levels[levelIndex].tasks.push('Nouvelle tâche');
+
+syncCities();
+
+render();
+
+saveDebounced();
+
+}
+
+function deleteTask(levelIndex,taskIndex){
+
+state.model.levels[levelIndex].tasks.splice(taskIndex,1);
+
+syncCities();
+
+render();
+
+saveDebounced();
+
+}
+
+function renameTask(levelIndex,taskIndex,value){
+
+state.model.levels[levelIndex].tasks[taskIndex]=value;
+
+saveDebounced();
+
+}
+
+async function init(){
+
+await loadCloud();
+
+render();
+
+}
+
+window.addEventListener('DOMContentLoaded',init);
 
 async function downloadScoreboardImage(){
 
@@ -458,25 +299,6 @@ if(window.ExportRenderer){
 
 await window.ExportRenderer.exportScoreboard();
 
-}else{
-
-alert('Renderer non chargé');
-
 }
 
 }
-
-window.addEventListener('DOMContentLoaded',()=>{
-
-if(!document.querySelector('#renderer-script')){
-
-const script=document.createElement('script');
-
-script.src='exportRenderer.js';
-script.id='renderer-script';
-
-document.body.appendChild(script);
-
-}
-
-});
