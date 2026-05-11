@@ -450,3 +450,33 @@ document.body.prepend(bg);
 }
 
 });
+
+
+async function downloadScoreboardImage(){
+
+if(window.ExportRenderer){
+
+await window.ExportRenderer.exportScoreboard();
+
+}else{
+
+alert('Renderer non chargé');
+
+}
+
+}
+
+window.addEventListener('DOMContentLoaded',()=>{
+
+if(!document.querySelector('#renderer-script')){
+
+const script=document.createElement('script');
+
+script.src='exportRenderer.js';
+script.id='renderer-script';
+
+document.body.appendChild(script);
+
+}
+
+});
