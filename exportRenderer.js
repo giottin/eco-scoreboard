@@ -13,7 +13,7 @@ ctx.imageSmoothingQuality = 'high';
 
 const width = 1600;
 const margin = 50;
-const cityHeight = 520;
+const cityHeight = 430;
 const topPadding = 260;
 
 const totalHeight = topPadding + (state.cities.length * (cityHeight + margin)) + 80;
@@ -39,21 +39,21 @@ for(const city of state.cities){
 const rank = getCityRank(city);
 const rankImg = await loadImage(rank.asset);
 
-const rankWidth = 1180;
+const rankWidth = 860;
 const rankHeight = (rankImg.height / rankImg.width) * rankWidth;
 const rankX = (width - rankWidth) / 2;
 
 ctx.drawImage(rankImg, rankX, y, rankWidth, rankHeight);
 
 ctx.fillStyle='white';
-ctx.font='700 40px Cinzel';
+ctx.font='700 34px Cinzel';
 ctx.textAlign='center';
 ctx.textBaseline='middle';
 
 ctx.fillText(
 (city.name || 'Ville').toUpperCase(),
 width / 2,
-y + (rankHeight * 0.63)
+y + (rankHeight * 0.72)
 );
 
 let progressX = 70;
@@ -64,14 +64,14 @@ const filled = index < getCompletedLevels(city);
 
 ctx.fillStyle = filled ? '#38ff63' : '#232323';
 
-roundRect(ctx,progressX,y + rankHeight + 28,165,16,8,true,false);
+roundRect(ctx,progressX,y + rankHeight + 12,165,16,8,true,false);
 
 progressX += 185;
 
 });
 
 let lx = 40;
-let ly = y + rankHeight + 68;
+let ly = y + rankHeight + 46;
 
 state.model.levels.forEach((level,l)=>{
 
