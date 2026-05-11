@@ -271,3 +271,32 @@ background:rgba(0,0,0,.25);
 accent-color:#32ff32 !important;
 }
 
+
+
+body.export-mode{
+background:url('fond.png') center/cover fixed !important;
+background-color:#000 !important;
+}
+
+.export-mode .overlay{
+background:rgba(0,0,0,.35) !important;
+}
+
+.export-mode .city-name-input{
+top:62% !important;
+left:50% !important;
+right:auto !important;
+transform:translate(-50%,-50%) !important;
+text-align:center !important;
+width:52% !important;
+}
+
+.export-mode button{
+display:none !important;
+}
+
+.export-mode .rank-panel{
+background-position:center center !important;
+background-size:contain !important;
+}
+
