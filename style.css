@@ -236,3 +236,14 @@ border:1px solid #ff5b5b;
 padding:6px 10px;
 border-radius:10px;
 }
+
+
+.download-btn{
+background:#18351c;
+border:1px solid #5cff89;
+}
+
+.download-btn:hover{
+transform:translateY(-1px);
+}
+

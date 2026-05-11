@@ -275,6 +275,43 @@ render();
 save();
 }
 
+
+function downloadScoreboardImage(){
+
+const target=document.querySelector('#cities');
+
+if(!window.html2canvas){
+alert('Chargement du module image...');
+const script=document.createElement('script');
+script.src='https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js';
+script.onload=()=>downloadScoreboardImage();
+document.body.appendChild(script);
+return;
+}
+
+html2canvas(target,{
+backgroundColor:null,
+scale:1.2,
+useCORS:true
+}).then(canvas=>{
+
+canvas.toBlob((blob)=>{
+
+const url=URL.createObjectURL(blob);
+const a=document.createElement('a');
+
+a.href=url;
+a.download='eco-scoreboard.jpg';
+
+a.click();
+
+URL.revokeObjectURL(url);
+
+},'image/jpeg',0.82);
+
+});
+}
+
 function addCity(){
 state.cities.push(cityTemplate(''));
 render();
@@ -304,3 +341,21 @@ state.cities=[cityTemplate(''),cityTemplate('')];
 }
 
 render();
+
+
+setTimeout(()=>{
+
+const topbar=document.querySelector('.actions');
+
+if(topbar && !document.querySelector('.download-btn')){
+
+const btn=document.createElement('button');
+btn.innerText='📸 Télécharger image';
+btn.className='download-btn';
+btn.onclick=downloadScoreboardImage;
+
+topbar.appendChild(btn);
+
+}
+
+},200);
