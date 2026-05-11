@@ -249,54 +249,16 @@ transform:translateY(-1px);
 
 
 
-.export-mode *{
-transform:none !important;
+
+
+.download-btn{
+background:#173417;
+border:1px solid #59ff86;
 }
 
-.export-mode .city-name-input{
-top:61% !important;
-}
-
-.export-mode .download-btn,
-.export-mode .delete-city,
-.export-mode .actions button:not(.download-btn){
-display:none !important;
-}
-
-.export-mode .overlay{
-background:rgba(0,0,0,.25);
-}
-
-.green-check{
-accent-color:#32ff32 !important;
-}
-
-
-
-body.export-mode{
-background:url('fond.png') center/cover fixed !important;
-background-color:#000 !important;
-}
-
-.export-mode .overlay{
-background:rgba(0,0,0,.35) !important;
-}
-
-.export-mode .city-name-input{
-top:62% !important;
-left:50% !important;
-right:auto !important;
-transform:translate(-50%,-50%) !important;
-text-align:center !important;
-width:52% !important;
-}
-
-.export-mode button{
-display:none !important;
-}
-
-.export-mode .rank-panel{
-background-position:center center !important;
-background-size:contain !important;
+.city-name-input{
+text-align:center;
+left:50%;
+transform:translate(-50%,-50%);
 }
 
