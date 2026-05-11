@@ -86,7 +86,26 @@ html+='</div></div>';
 panel.innerHTML=html;
 }
 
+
+function getCityScore(city){
+const completed=getCompletedLevels(city);
+let totalChecks=0;
+
+Object.values(city.checks || {}).forEach(level=>{
+Object.values(level || {}).forEach(v=>{
+if(v) totalChecks++;
+});
+});
+
+return completed * 1000 + totalChecks;
+}
+
+function sortCitiesByProgress(){
+state.cities.sort((a,b)=>getCityScore(b)-getCityScore(a));
+}
+
 function renderCities(){
+sortCitiesByProgress();
 const container=document.getElementById('cities');
 container.innerHTML='';
 
