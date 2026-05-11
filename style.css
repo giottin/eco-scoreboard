@@ -199,3 +199,40 @@ font-size:16px;
 }
 
 }
+
+
+.task-edit-row{
+display:flex;
+gap:8px;
+align-items:center;
+margin-bottom:8px;
+}
+
+.editor-actions-row{
+display:flex;
+gap:8px;
+margin-top:12px;
+flex-wrap:wrap;
+}
+
+.global-editor-actions{
+display:flex;
+justify-content:center;
+margin-top:20px;
+}
+
+.add-level-btn{
+background:#1c3d1c;
+border:1px solid #4eff75;
+}
+
+.danger-btn,
+.mini-delete{
+background:#3a1010;
+border:1px solid #ff5b5b;
+}
+
+.mini-delete{
+padding:6px 10px;
+border-radius:10px;
+}

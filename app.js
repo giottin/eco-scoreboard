@@ -54,6 +54,35 @@ if(name.length > 14) return 'small';
 return '';
 }
 
+
+
+function addLevel(){
+state.model.levels.push({
+name:`Palier ${state.model.levels.length+1}`,
+tasks:['Nouvelle tâche']
+});
+render();
+save();
+}
+
+function deleteLevel(index){
+state.model.levels.splice(index,1);
+render();
+save();
+}
+
+function addTask(levelIndex){
+state.model.levels[levelIndex].tasks.push('Nouvelle tâche');
+render();
+save();
+}
+
+function deleteTask(levelIndex,taskIndex){
+state.model.levels[levelIndex].tasks.splice(taskIndex,1);
+render();
+save();
+}
+
 function renderEditor(){
 const panel=document.getElementById('editorPanel');
 
@@ -73,13 +102,34 @@ value="${level.name}"
 onchange="renameLevel(${l},this.value)">`;
 
 level.tasks.forEach((task,t)=>{
-html+=`<input class="task-input"
+html+=`
+<div class="task-edit-row">
+<input class="task-input"
 value="${task}"
-onchange="renameTask(${l},${t},this.value)">`;
+onchange="renameTask(${l},${t},this.value)">
+
+<button
+class="mini-delete"
+onclick="deleteTask(${l},${t})">✕</button>
+</div>
+`;
 });
+
+html+=`
+<div class="editor-actions-row">
+<button onclick="addTask(${l})">+ Élément</button>
+<button class="danger-btn" onclick="deleteLevel(${l})">Supprimer palier</button>
+</div>
+`;
 
 html+='</div>';
 });
+
+html+=`
+<div class="global-editor-actions">
+<button class="add-level-btn" onclick="addLevel()">+ Ajouter un palier</button>
+</div>
+`;
 
 html+='</div></div>';
 
