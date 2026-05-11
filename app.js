@@ -32,7 +32,9 @@ return completed;
 }
 
 function getRank(city){
-return Math.min(8, Math.max(1,getCompletedLevels(city)+1));
+const completed=getCompletedLevels(city);
+if(completed<=0) return 0;
+return Math.min(8,completed);
 }
 
 function renderProgress(city){
@@ -127,13 +129,13 @@ onclick="deleteCity('${city.id}')">🗑</button>
 
 <div
 class="rank-panel"
-style="background-image:url('city_rank_${rank}.png')">
+style="background-image:${rank>0?`url('city_rank_${rank}.png')`:'none'}">
 
 <input
 class="city-name-input ${getNameClass(city.name)}"
 value="${city.name}"
 placeholder="Nom de ville"
-oninput="renameCity('${city.id}',this.value)">
+onchange="renameCity('${city.id}',this.value)" oninput="updateCityNameOnly(this.value,'${city.id}')">
 
 </div>
 
@@ -152,6 +154,18 @@ ${levels}
 function render(){
 renderEditor();
 renderCities();
+}
+
+
+function updateCityNameOnly(value,id){
+const city=state.cities.find(c=>c.id===id);
+city.name=value;
+
+clearTimeout(window.citySaveTimer);
+
+window.citySaveTimer=setTimeout(()=>{
+save();
+},300);
 }
 
 function renameCity(id,value){
