@@ -16,12 +16,12 @@ ctx.imageSmoothingEnabled = true;
 ctx.imageSmoothingQuality = 'high';
 
 const width = 1920;
-const height = 1080;
+const height = 1400;
 
 canvas.width = width;
 canvas.height = height;
 
-/* ===== BACKGROUND ===== */
+/* BACKGROUND */
 
 const bg = await loadImage('fond.png');
 
@@ -48,143 +48,247 @@ offsetY = (height - drawHeight) / 2;
 
 ctx.drawImage(bg, offsetX, offsetY, drawWidth, drawHeight);
 
-/* ===== OVERLAY ===== */
+/* GLOBAL OVERLAY */
 
-ctx.fillStyle='rgba(0,0,0,0.48)';
+ctx.fillStyle='rgba(0,0,0,0.55)';
 ctx.fillRect(0,0,width,height);
 
-/* ===== MAIN PANEL ===== */
+/* MAIN CONTAINER */
 
-ctx.fillStyle='rgba(18,18,18,0.72)';
-roundRect(ctx,40,40,width-80,height-80,32,true,false);
+ctx.fillStyle='rgba(12,12,12,0.62)';
+roundRect(ctx,40,40,width-80,height-80,34,true,false);
 
-/* ===== HEADER ===== */
+ctx.strokeStyle='rgba(255,200,90,0.25)';
+ctx.lineWidth=2;
+roundRect(ctx,40,40,width-80,height-80,34,false,true);
+
+/* HEADER */
 
 const rank = getCityRank(city);
-
 const rankImg = await loadImage(rank.asset);
 
-const rankWidth = 820;
+const rankWidth = 760;
 const rankHeight = (rankImg.height / rankImg.width) * rankWidth;
 
-const rankX = (width-rankWidth)/2;
+ctx.drawImage(
+rankImg,
+(width-rankWidth)/2,
+70,
+rankWidth,
+rankHeight
+);
 
-ctx.drawImage(rankImg,rankX,50,rankWidth,rankHeight);
+/* CITY NAME */
 
 ctx.fillStyle='white';
 
-const cityFont =
-city.name.length > 20 ? 34 :
-city.name.length > 14 ? 42 : 52;
+const fontSize =
+city.name.length > 22 ? 38 :
+city.name.length > 16 ? 48 :
+56;
 
-ctx.font=`700 ${cityFont}px Cinzel`;
+ctx.font=`700 ${fontSize}px Cinzel`;
 
 ctx.textAlign='center';
 ctx.textBaseline='middle';
 
-ctx.shadowColor='rgba(0,0,0,0.85)';
+ctx.shadowColor='rgba(0,0,0,0.9)';
 ctx.shadowBlur=18;
 
 ctx.fillText(
 (city.name || 'VILLE').toUpperCase(),
 width/2,
-205
+220
 );
 
 ctx.shadowBlur=0;
 
-/* ===== GLOBAL PROGRESS ===== */
+/* PROGRESS BAR */
 
-ctx.fillStyle='rgba(0,0,0,0.72)';
-roundRect(ctx,120,320,width-240,34,16,true,false);
-
-ctx.fillStyle='#3cff67';
+ctx.fillStyle='rgba(0,0,0,0.82)';
+roundRect(ctx,120,330,width-240,34,18,true,false);
 
 const completed = getCompletedLevels(city);
 
 const progressWidth =
 ((width-240)/8) * completed;
 
-roundRect(ctx,120,320,progressWidth,34,16,true,false);
+ctx.fillStyle='#3eff67';
 
-/* ===== SCALE ===== */
+roundRect(ctx,120,330,progressWidth,34,18,true,false);
 
-ctx.fillStyle='white';
-ctx.font='700 20px Arial';
+/* ROMAN LEVELS */
 
 const romans=['I','II','III','IV','V','VI','VII','VIII'];
+
+ctx.fillStyle='white';
+ctx.font='700 22px Cinzel';
 
 for(let i=0;i<8;i++){
 
 ctx.fillText(
 romans[i],
-165 + (i*210),
-390
+170 + (i*210),
+405
 );
 
 }
 
-/* ===== LEVEL PANELS ===== */
+/* DYNAMIC PANELS */
 
-let startX = 70;
-let startY = 450;
+const cols = 4;
+const gapX = 40;
+const gapY = 40;
+
+const panelWidth = 400;
+
+let positions = [];
+
+let currentX = 70;
+let currentY = 460;
+
+let rowHeights = [];
+
+state.model.levels.forEach((level,index)=>{
+
+const taskCount = level.tasks.length;
+
+const panelHeight =
+120 + (taskCount * 68);
+
+positions.push({
+x: currentX,
+y: currentY,
+h: panelHeight
+});
+
+rowHeights.push(panelHeight);
+
+currentX += panelWidth + gapX;
+
+if((index+1)%cols===0){
+
+currentX = 70;
+
+currentY += Math.max(...rowHeights) + gapY;
+
+rowHeights = [];
+
+}
+
+});
+
+/* DRAW PANELS */
 
 state.model.levels.forEach((level,l)=>{
 
-ctx.fillStyle='rgba(22,22,22,0.76)';
-roundRect(ctx,startX,startY,390,220,22,true,false);
+const pos = positions[l];
 
-ctx.strokeStyle='rgba(255,190,90,0.25)';
+ctx.fillStyle='rgba(14,14,14,0.78)';
+roundRect(ctx,pos.x,pos.y,panelWidth,pos.h,24,true,false);
+
+ctx.strokeStyle='rgba(255,195,95,0.35)';
 ctx.lineWidth=2;
-roundRect(ctx,startX,startY,390,220,22,false,true);
+
+roundRect(ctx,pos.x,pos.y,panelWidth,pos.h,24,false,true);
+
+/* HEADER */
 
 ctx.fillStyle='#eadfc6';
-roundRect(ctx,startX+16,startY+16,358,52,14,true,false);
 
-ctx.fillStyle='#2b1b0d';
+roundRect(
+ctx,
+pos.x+16,
+pos.y+16,
+panelWidth-32,
+58,
+14,
+true,
+false
+);
+
+ctx.fillStyle='#2d1d0d';
+
 ctx.font='700 24px Arial';
 ctx.textAlign='center';
 
 ctx.fillText(
 level.name,
-startX+195,
-startY+48
+pos.x + panelWidth/2,
+pos.y + 53
 );
 
+/* TASKS */
+
 ctx.textAlign='left';
+
 ctx.font='20px Arial';
 
-let ty = startY + 105;
+let taskY = pos.y + 110;
 
 level.tasks.forEach((task,t)=>{
 
 ctx.fillStyle='#eadfc6';
-roundRect(ctx,startX+16,ty-24,358,42,12,true,false);
+
+roundRect(
+ctx,
+pos.x+16,
+taskY-24,
+panelWidth-32,
+48,
+12,
+true,
+false
+);
+
+/* CHECKBOX */
 
 const checked = city.checks?.[l]?.[t];
 
-ctx.fillStyle = checked ? '#38ff63' : '#7f7f7f';
-ctx.fillRect(startX+30,ty-10,18,18);
+ctx.fillStyle =
+checked ? '#40f56c' : '#8c8c8c';
 
-ctx.fillStyle='#2b1b0d';
-ctx.fillText(task,startX+65,ty+4);
+roundRect(
+ctx,
+pos.x+28,
+taskY-10,
+22,
+22,
+6,
+true,
+false
+);
 
-ty += 56;
+/* CHECKMARK */
 
-});
+if(checked){
 
-startX += 440;
+ctx.strokeStyle='white';
+ctx.lineWidth=3;
 
-if(startX + 390 > width){
-
-startX = 70;
-startY += 270;
+ctx.beginPath();
+ctx.moveTo(pos.x+33, taskY+1);
+ctx.lineTo(pos.x+38, taskY+8);
+ctx.lineTo(pos.x+47, taskY-4);
+ctx.stroke();
 
 }
 
+ctx.fillStyle='#2a1b0d';
+
+ctx.fillText(
+task,
+pos.x+70,
+taskY+7
+);
+
+taskY += 68;
+
 });
 
-/* ===== EXPORT ===== */
+});
+
+/* EXPORT */
 
 const data = canvas.toDataURL('image/png').split(',')[1];
 
@@ -217,6 +321,7 @@ document.body.removeChild(link);
 function roundRect(ctx,x,y,w,h,r,fill,stroke){
 
 ctx.beginPath();
+
 ctx.moveTo(x+r,y);
 ctx.lineTo(x+w-r,y);
 ctx.quadraticCurveTo(x+w,y,x+w,y+r);
