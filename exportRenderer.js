@@ -110,12 +110,33 @@ roundRect(ctx,120,330,width-240,34,18,true,false);
 
 const completed = getCompletedLevels(city);
 
+const segmentWidth = (width - 240) / 8;
+
+/*
+Niveau 0 = barre vide
+Niveau 1 = jusqu'au chiffre I
+Niveau 2 = jusqu'au chiffre II
+etc
+*/
+
 const progressWidth =
-((width-240)/8) * completed;
+Math.max(
+0,
+(completed - 1) * segmentWidth + (segmentWidth * 0.5)
+);
 
 ctx.fillStyle='#3eff67';
 
-roundRect(ctx,120,330,progressWidth,34,18,true,false);
+roundRect(
+ctx,
+120,
+330,
+progressWidth,
+34,
+18,
+true,
+false
+);
 
 /* ROMAN LEVELS */
 
@@ -128,7 +149,7 @@ for(let i=0;i<8;i++){
 
 ctx.fillText(
 romans[i],
-170 + (i*210),
+225 + (i*195),
 405
 );
 
