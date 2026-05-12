@@ -42,7 +42,9 @@ offsetY = 0;
 drawWidth = width;
 drawHeight = drawWidth / bgRatio;
 offsetX = 0;
-offsetY = (height - drawHeight) / 2;
+
+/* background aligné en haut */
+offsetY = 0;
 
 }
 
