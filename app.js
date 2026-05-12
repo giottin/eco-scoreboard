@@ -302,3 +302,38 @@ await window.ExportRenderer.exportScoreboard();
 }
 
 }
+
+
+
+async function downloadAllCities() {
+
+const cities = document.querySelectorAll('.city');
+
+for (let i = 0; i < cities.length; i++) {
+
+const city = cities[i];
+
+const canvas = await html2canvas(city, {
+backgroundColor: null,
+scale: 2,
+useCORS: true
+});
+
+const link = document.createElement('a');
+
+const cityName =
+city.querySelector('.city-name')?.innerText ||
+('ville_' + (i + 1));
+
+link.download =
+cityName.replace(/[^a-z0-9]/gi, '_').toLowerCase() + '.png';
+
+link.href = canvas.toDataURL('image/png');
+
+link.click();
+
+await new Promise(resolve => setTimeout(resolve, 400));
+
+}
+
+}
