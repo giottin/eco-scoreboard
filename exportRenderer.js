@@ -5,6 +5,10 @@ async exportScoreboard(){
 
 await document.fonts.ready;
 
+const zip = new JSZip();
+
+for(const city of state.cities){
+
 const canvas = document.createElement('canvas');
 const ctx = canvas.getContext('2d');
 
@@ -12,57 +16,42 @@ ctx.imageSmoothingEnabled = true;
 ctx.imageSmoothingQuality = 'high';
 
 const width = 1600;
-const margin = 90;
-const cityHeight = 660;
-const topPadding = 500;
-
-const totalHeight = topPadding + (state.cities.length * (cityHeight + margin)) + 80;
+const height = 980;
 
 canvas.width = width;
-canvas.height = totalHeight;
+canvas.height = height;
 
 const bg = await loadImage('fond.png');
-ctx.drawImage(bg,0,0,width,totalHeight);
+ctx.drawImage(bg,0,0,width,height);
 
 ctx.fillStyle='rgba(0,0,0,0.58)';
-ctx.fillRect(0,0,width,totalHeight);
-
-const logo = await loadImage('logo.png');
-const logoWidth = 380;
-const logoHeight = (logo.height / logo.width) * logoWidth;
-ctx.drawImage(logo,(width-logoWidth)/2,40,logoWidth,logoHeight);
-
-let y = topPadding;
-
-for(const city of state.cities){
+ctx.fillRect(0,0,width,height);
 
 const rank = getCityRank(city);
 const rankImg = await loadImage(rank.asset);
 
 const rankWidth = 700;
 const rankHeight = (rankImg.height / rankImg.width) * rankWidth;
+
 const rankX = (width - rankWidth) / 2;
 
-// fond flou général derrière les ranks + progression
-ctx.save();
-ctx.fillStyle='rgba(0,0,0,0.72)';
-ctx.shadowColor='rgba(255,255,255,0.10)';
-ctx.shadowBlur=110;
-roundRect(ctx, 12, y + rankHeight - 15, width - 24, 505, 42, true, false);
-ctx.restore();
-
-ctx.drawImage(rankImg, rankX, y, rankWidth, rankHeight);
+ctx.drawImage(rankImg, rankX, 30, rankWidth, rankHeight);
 
 ctx.fillStyle='white';
-const cityFontSize = city.name.length > 18 ? 26 : city.name.length > 12 ? 30 : 34;
+
+const cityFontSize =
+city.name.length > 18 ? 26 :
+city.name.length > 12 ? 30 : 36;
+
 ctx.font=`700 ${cityFontSize}px Cinzel`;
+
 ctx.textAlign='center';
 ctx.textBaseline='middle';
 
 ctx.fillText(
 (city.name || 'Ville').toUpperCase(),
 width / 2,
-y + 148
+165
 );
 
 let progressX = 70;
@@ -73,14 +62,14 @@ const filled = index < getCompletedLevels(city);
 
 ctx.fillStyle = filled ? '#38ff63' : '#232323';
 
-roundRect(ctx,progressX,y + rankHeight + 26,165,18,9,true,false);
+roundRect(ctx,progressX,260,165,18,9,true,false);
 
 progressX += 185;
 
 });
 
 let lx = 40;
-let ly = y + rankHeight + 95;
+let ly = 330;
 
 state.model.levels.forEach((level,l)=>{
 
@@ -125,16 +114,31 @@ ly += 195;
 
 });
 
-y += cityHeight + margin;
+const dataUrl = canvas.toDataURL('image/png');
+
+const base64Data = dataUrl.split(',')[1];
+
+const safeName = (city.name || 'ville')
+.replace(/[^a-z0-9]/gi,'_')
+.toLowerCase();
+
+zip.file(`${safeName}.png`, base64Data, {base64:true});
 
 }
 
+const content = await zip.generateAsync({type:'blob'});
+
 const link = document.createElement('a');
 
-link.download='eco-scoreboard-clean.png';
-link.href = canvas.toDataURL('image/png');
+link.href = URL.createObjectURL(content);
+
+link.download = 'cities_export.zip';
+
+document.body.appendChild(link);
 
 link.click();
+
+document.body.removeChild(link);
 
 }
 
