@@ -15,124 +15,194 @@ const ctx = canvas.getContext('2d');
 ctx.imageSmoothingEnabled = true;
 ctx.imageSmoothingQuality = 'high';
 
-const width = 1600;
-const height = 980;
+const width = 1920;
+const height = 1080;
 
 canvas.width = width;
 canvas.height = height;
 
-const bg = await loadImage('fond.png');
-ctx.drawImage(bg,0,0,width,height);
+/* ===== BACKGROUND ===== */
 
-ctx.fillStyle='rgba(0,0,0,0.58)';
+const bg = await loadImage('fond.png');
+
+const bgRatio = bg.width / bg.height;
+const canvasRatio = width / height;
+
+let drawWidth, drawHeight, offsetX, offsetY;
+
+if(bgRatio > canvasRatio){
+
+drawHeight = height;
+drawWidth = drawHeight * bgRatio;
+offsetX = (width - drawWidth) / 2;
+offsetY = 0;
+
+}else{
+
+drawWidth = width;
+drawHeight = drawWidth / bgRatio;
+offsetX = 0;
+offsetY = (height - drawHeight) / 2;
+
+}
+
+ctx.drawImage(bg, offsetX, offsetY, drawWidth, drawHeight);
+
+/* ===== OVERLAY ===== */
+
+ctx.fillStyle='rgba(0,0,0,0.48)';
 ctx.fillRect(0,0,width,height);
 
+/* ===== MAIN PANEL ===== */
+
+ctx.fillStyle='rgba(18,18,18,0.72)';
+roundRect(ctx,40,40,width-80,height-80,32,true,false);
+
+/* ===== HEADER ===== */
+
 const rank = getCityRank(city);
+
 const rankImg = await loadImage(rank.asset);
 
-const rankWidth = 700;
+const rankWidth = 820;
 const rankHeight = (rankImg.height / rankImg.width) * rankWidth;
 
-const rankX = (width - rankWidth) / 2;
+const rankX = (width-rankWidth)/2;
 
-ctx.drawImage(rankImg, rankX, 30, rankWidth, rankHeight);
+ctx.drawImage(rankImg,rankX,50,rankWidth,rankHeight);
 
 ctx.fillStyle='white';
 
-const cityFontSize =
-city.name.length > 18 ? 26 :
-city.name.length > 12 ? 30 : 36;
+const cityFont =
+city.name.length > 20 ? 34 :
+city.name.length > 14 ? 42 : 52;
 
-ctx.font=`700 ${cityFontSize}px Cinzel`;
+ctx.font=`700 ${cityFont}px Cinzel`;
 
 ctx.textAlign='center';
 ctx.textBaseline='middle';
 
+ctx.shadowColor='rgba(0,0,0,0.85)';
+ctx.shadowBlur=18;
+
 ctx.fillText(
-(city.name || 'Ville').toUpperCase(),
-width / 2,
-165
+(city.name || 'VILLE').toUpperCase(),
+width/2,
+205
 );
 
-let progressX = 70;
+ctx.shadowBlur=0;
 
-state.model.levels.forEach((level,index)=>{
+/* ===== GLOBAL PROGRESS ===== */
 
-const filled = index < getCompletedLevels(city);
+ctx.fillStyle='rgba(0,0,0,0.72)';
+roundRect(ctx,120,320,width-240,34,16,true,false);
 
-ctx.fillStyle = filled ? '#38ff63' : '#232323';
+ctx.fillStyle='#3cff67';
 
-roundRect(ctx,progressX,260,165,18,9,true,false);
+const completed = getCompletedLevels(city);
 
-progressX += 185;
+const progressWidth =
+((width-240)/8) * completed;
 
-});
+roundRect(ctx,120,320,progressWidth,34,16,true,false);
 
-let lx = 40;
-let ly = 330;
+/* ===== SCALE ===== */
+
+ctx.fillStyle='white';
+ctx.font='700 20px Arial';
+
+const romans=['I','II','III','IV','V','VI','VII','VIII'];
+
+for(let i=0;i<8;i++){
+
+ctx.fillText(
+romans[i],
+165 + (i*210),
+390
+);
+
+}
+
+/* ===== LEVEL PANELS ===== */
+
+let startX = 70;
+let startY = 450;
 
 state.model.levels.forEach((level,l)=>{
 
-ctx.fillStyle='rgba(12,12,12,0.82)';
-roundRect(ctx,lx,ly,340,165,16,true,false);
+ctx.fillStyle='rgba(22,22,22,0.76)';
+roundRect(ctx,startX,startY,390,220,22,true,false);
 
-ctx.strokeStyle='rgba(180,120,50,0.45)';
-ctx.strokeRect(lx,ly,340,165);
+ctx.strokeStyle='rgba(255,190,90,0.25)';
+ctx.lineWidth=2;
+roundRect(ctx,startX,startY,390,220,22,false,true);
 
-ctx.fillStyle='white';
+ctx.fillStyle='#eadfc6';
+roundRect(ctx,startX+16,startY+16,358,52,14,true,false);
+
+ctx.fillStyle='#2b1b0d';
 ctx.font='700 24px Arial';
+ctx.textAlign='center';
+
+ctx.fillText(
+level.name,
+startX+195,
+startY+48
+);
+
 ctx.textAlign='left';
+ctx.font='20px Arial';
 
-ctx.fillText(level.name,lx+18,ly+36);
-
-ctx.font='18px Arial';
-
-let ty = ly + 72;
+let ty = startY + 105;
 
 level.tasks.forEach((task,t)=>{
 
+ctx.fillStyle='#eadfc6';
+roundRect(ctx,startX+16,ty-24,358,42,12,true,false);
+
 const checked = city.checks?.[l]?.[t];
 
-ctx.fillStyle = checked ? '#38ff63' : '#8a8a8a';
-ctx.fillRect(lx+18,ty-14,16,16);
+ctx.fillStyle = checked ? '#38ff63' : '#7f7f7f';
+ctx.fillRect(startX+30,ty-10,18,18);
 
-ctx.fillStyle='white';
-ctx.fillText(task,lx+48,ty);
+ctx.fillStyle='#2b1b0d';
+ctx.fillText(task,startX+65,ty+4);
 
-ty += 30;
+ty += 56;
 
 });
 
-lx += 370;
+startX += 440;
 
-if(lx + 340 > width){
+if(startX + 390 > width){
 
-lx = 40;
-ly += 195;
+startX = 70;
+startY += 270;
 
 }
 
 });
 
-const dataUrl = canvas.toDataURL('image/png');
+/* ===== EXPORT ===== */
 
-const base64Data = dataUrl.split(',')[1];
+const data = canvas.toDataURL('image/png').split(',')[1];
 
 const safeName = (city.name || 'ville')
 .replace(/[^a-z0-9]/gi,'_')
 .toLowerCase();
 
-zip.file(`${safeName}.png`, base64Data, {base64:true});
+zip.file(`${safeName}.png`,data,{base64:true});
 
 }
 
-const content = await zip.generateAsync({type:'blob'});
+const blob = await zip.generateAsync({type:'blob'});
 
 const link = document.createElement('a');
 
-link.href = URL.createObjectURL(content);
+link.href = URL.createObjectURL(blob);
 
-link.download = 'cities_export.zip';
+link.download='cities_export.zip';
 
 document.body.appendChild(link);
 
@@ -144,19 +214,18 @@ document.body.removeChild(link);
 
 };
 
-function roundRect(ctx,x,y,width,height,radius,fill,stroke){
+function roundRect(ctx,x,y,w,h,r,fill,stroke){
 
 ctx.beginPath();
-
-ctx.moveTo(x + radius, y);
-ctx.lineTo(x + width - radius, y);
-ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
-ctx.lineTo(x + width, y + height - radius);
-ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
-ctx.lineTo(x + radius, y + height);
-ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
-ctx.lineTo(x, y + radius);
-ctx.quadraticCurveTo(x, y, x + radius, y);
+ctx.moveTo(x+r,y);
+ctx.lineTo(x+w-r,y);
+ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+ctx.lineTo(x+w,y+h-r);
+ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+ctx.lineTo(x+r,y+h);
+ctx.quadraticCurveTo(x,y+h,x,y+h-r);
+ctx.lineTo(x,y+r);
+ctx.quadraticCurveTo(x,y,x+r,y);
 ctx.closePath();
 
 if(fill) ctx.fill();
